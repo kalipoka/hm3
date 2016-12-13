@@ -5,9 +5,9 @@
  *      Author: Shirel_local
  */
 
-
+struct List_; // I added this 
 typedef struct List_* PList;
-typedef void* PElem;
+typedef void* PElem;                  //can be any type
 typedef enum{FAIL, SUCCESS} Result;
 
 /*User functions*/

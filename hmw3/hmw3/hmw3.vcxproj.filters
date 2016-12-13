@@ -18,12 +18,6 @@
     <ClCompile Include="list.c">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="main.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="set.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graph.h">
