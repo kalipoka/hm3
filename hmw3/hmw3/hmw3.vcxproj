@@ -18,6 +18,16 @@
       <Platform>x64</Platform>
     </ProjectConfiguration>
   </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="list.c" />
+    <ClCompile Include="main.c" />
+    <ClCompile Include="set.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="graph.h" />
+    <ClInclude Include="list.h" />
+    <ClInclude Include="set.h" />
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{16B75750-67C9-4E0A-8DA5-C87C9B05AD46}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
@@ -145,15 +155,6 @@
       <GenerateDebugInformation>true</GenerateDebugInformation>
     </Link>
   </ItemDefinitionGroup>
-  <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\Dropbox\sem7\mmt\wet3\auxilary\graph.h" />
-    <ClInclude Include="..\..\..\..\..\Dropbox\sem7\mmt\wet3\auxilary\list.h" />
-    <ClInclude Include="..\..\..\..\..\Dropbox\sem7\mmt\wet3\auxilary\set.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\Dropbox\sem7\mmt\wet3\auxilary\main.c" />
-    <ClCompile Include="..\..\..\..\..\Dropbox\sem7\mmt\wet3\auxilary\set.c" />
-  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>

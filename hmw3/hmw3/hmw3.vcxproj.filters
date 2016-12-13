@@ -15,22 +15,25 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\..\Dropbox\sem7\mmt\wet3\auxilary\graph.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Dropbox\sem7\mmt\wet3\auxilary\list.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\..\..\Dropbox\sem7\mmt\wet3\auxilary\set.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
+    <ClCompile Include="list.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="main.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="set.c">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\..\Dropbox\sem7\mmt\wet3\auxilary\main.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\..\..\Dropbox\sem7\mmt\wet3\auxilary\set.c">
-      <Filter>Source Files</Filter>
-    </ClCompile>
+    <ClInclude Include="graph.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="list.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="set.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
 </Project>
