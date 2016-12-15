@@ -5,7 +5,7 @@
  *      Author: Shirel_local
  */
 
-struct List_; // I added this 
+
 typedef struct List_* PList;
 typedef void* PElem;                  //can be any type
 typedef enum{FAIL, SUCCESS} Result;
@@ -15,12 +15,12 @@ typedef PElem (*CLONE_FUNC)(PElem);
 typedef void (*DESTROY_FUNC)(PElem);
 
 /*Interface functions*/
-PList ListCreate(CLONE_FUNC, DESTROY_FUNC);
+PList ListCreate(CLONE_FUNC, DESTROY_FUNC);    //done compiled and checked
 void ListDestroy(PList);
-Result ListAdd(PList, PElem);
+Result ListAdd(PList, PElem);                   //done compiled and checked
 PElem ListGetFirst(PList);
 PElem ListGetNext(PList);
 
 Result ListRemove(PList);
-int ListGetSize(PList);
+int ListGetSize(PList);                        //done compiled and checked
 
