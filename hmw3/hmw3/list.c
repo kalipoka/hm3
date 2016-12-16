@@ -24,7 +24,7 @@ typedef struct List_ {
 	PNODE iterator;         /* The ITERAOR ***************************should it be here?*/
 } List, *PList;
 
-/*******************FUCKTIONS***********************/
+/********************************FUCKTIONS*************************************/
 
 /*****************************
 *ListCreate function
@@ -71,7 +71,7 @@ Result ListAdd(PList s, PElem Elem)
 	//check if the list is empy - has 0 nodes - we need to create the head - We did MALLOC for the head already
 	if (s->size == 0)
 	{
-		///  if ((s->head->element = cpy_elem(Elem)) == NULL)          //Activate after debug
+		//if ((s->head->element = cpy_elem(Elem)) == NULL)          //Activate after debug
 		s->head->element = Elem;									//Delete after debug
 		//	return FAIL;											//Activate after debug
 		s->head->pNext = NULL; // no next elemnts yet
@@ -184,14 +184,6 @@ Result ListRemove(PList s)
 		s->iterator = NULL;
 		return SUCCESS;
 	}
-	
-	/*
-	else                                          // legal iterator and not the head
-	{
-		temp = s->iterator;
-	}
-	*/
-	return SUCCESS;                       //Delete after debug
 }
 
 /****************************
@@ -236,16 +228,16 @@ int ListGetSize(PList List)
 	return List->size;
 }
 
+/*********************************** Deeebugy & Testen ****************************************/
 int main()
 {
-	/********************** Deeebugy & Testen ***************************/
 	PList trying;
 	CLONE_FUNC cpy_elem = 1;
 	DESTROY_FUNC dstr_elem = 1;
 	int Elem1 = 2;
 	char Elem2 = 'c';
 	int Elem3 = 5;
-	char Elem4[3] = "sne";
+	char Elem4[3] = "sne";   
 
 	int godel;
 	PElem first_el, next_el_1, next_el_2, next_el_3, next_el_4;
@@ -306,7 +298,7 @@ int main()
 	*/
 
 	Result res5 = ListAdd(trying, Elem4);
-
+	//here we delete the 3rd elemnts out of 4
 	trying->iterator = trying->head->pNext->pNext;
 
 	//test ListRemove #2 - remove element from the middle
