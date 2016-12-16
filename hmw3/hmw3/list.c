@@ -176,6 +176,37 @@ Result ListRemove(PList s)
 	*/
 	return SUCCESS;                       //Delete after debug
 }
+
+/****************************
+*ListDestroy function
+*The function deletes the list - need to use user's destroy function for elements,
+*and to free malloc of list and of all the nodes
+*Argument (PList List)
+*Output () - nuber of nodes
+*****************************/
+void ListDestroy(PList s)
+{
+	PNODE tmp,next;
+
+	if (s == NULL)
+		return FAIL;
+
+	tmp = s->head;
+
+	while (tmp)
+	{
+		//if ((dstr_elem(tmp->element)) == NULL)          //Activate after debug &&&&&&&&&&&&&&&&&&&&&&&&
+		//	return FAIL;                                        //Activate after debug &&&&&&&&&&&&&&&&&&&&&
+		s->head = s->head->pNext;
+		free(tmp);
+		tmp = s->head;
+	}	
+	
+	// here we are done destroyng all the nodes, So we let FREE the List
+	free(s);
+}
+
+
 /****************************
 *ListGetSize function
 *Argument (PList List)
@@ -188,18 +219,6 @@ int ListGetSize(PList List)
 	return List->size;
 }
 
-/*
-*Destroy function
-*Argument (PList s)
-*Output ()
-*/
-/*
-void ListDestroy(PList s)
-{
-	if (s == NULL)
-		return;
-}
-*/
 int main()
 {
 	/********************** Deeebugy & Testen ***************************/
@@ -215,20 +234,20 @@ int main()
 	/* test ListCreate */
 	printf("Hola negritos\n");
 	trying = ListCreate(cpy_elem, dstr_elem);
-	printf("The list was created\n");
+	printf("The list was created\n\n");
 
 	/* test ListAdd */
 	printf("Add the 1st Element (int type)\n");
 	Result res1 = ListAdd(trying, Elem1);
-	printf("Adding 1st Element DONE\n");
+	printf("Adding 1st Element DONE\n\n");
 	
 	printf("Add the 2nd Element (char type)\n");
 	Result res2 = ListAdd(trying, Elem2);
-	printf("Adding the 2nd Element (char type) DONE \n");
+	printf("Adding the 2nd Element (char type) DONE \n\n");
 
 	printf("Add the 3nd Element (string type)\n");
 	Result res3 = ListAdd(trying, Elem3);
-	printf("Adding the 3d Element (string type) DONE \n");
+	printf("Adding the 3d Element (string type) DONE \n\n");
 
 	/* test ListGetSize */
 	godel = ListGetSize(trying);
@@ -236,31 +255,36 @@ int main()
 	/* test ListGetFirst */
 	printf("Recieve the 1st element\n");
 	first_el = ListGetFirst(trying);
-	printf("Recieve the 1st element DONE\n");
+	printf("Recieve the 1st element DONE\n\n");
 
 	/* test ListGetNext */
 	/*
 	printf("Recieve the next element &1 \n");
 	next_el_1 = ListGetNext(trying);
-	printf("Recieve the next element &1 DONE\n");
+	printf("Recieve the next element &1 DONE\n\n");
 	
 	printf("Recieve the next element &2 \n");
 	next_el_2= ListGetNext(trying);
-	printf("Recieve the next element &2 DONE\n");
+	printf("Recieve the next element &2 DONE\n\n");
 	
 	printf("Recieve the next element &3 \n");
 	next_el_3 = ListGetNext(trying);
-	printf("Recieve the next element &3 DONE\n");
+	printf("Recieve the next element &3 DONE\n\n");
 
 	printf("Recieve the next element &4 Should return Null \n");
 	next_el_4 = ListGetNext(trying);
-	printf("Recieve the next element &4 DONE\n");
-	*/
+	printf("Recieve the next element &4 DONE\n\n");
+	
 
-	/* test ListRemove */
+	//test ListRemove 
 	printf("Remove the head \n");
 	Result res4 = ListRemove(trying);
-	printf("Remove the head is DONE\n");
-	
+	printf("Remove the head is DONE\n\n");
+	*/
+
+	//test ListDestroy
+	printf("Destroy The List \n");
+	ListDestroy(trying);
+	printf("Destroy The List DONE \n\n");
 	return 0;
 }

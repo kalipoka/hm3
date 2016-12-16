@@ -16,11 +16,11 @@ typedef void (*DESTROY_FUNC)(PElem);
 
 /*Interface functions*/
 PList ListCreate(CLONE_FUNC, DESTROY_FUNC);    //done compiled and checked
-void ListDestroy(PList);
+void ListDestroy(PList);						//done compiled and checked
 Result ListAdd(PList, PElem);                   //done compiled and checked
 PElem ListGetFirst(PList);						//done compiled and checked
 PElem ListGetNext(PList);						//done compiled and checked
 
-Result ListRemove(PList);
+Result ListRemove(PList);                       // started - not complete yet
 int ListGetSize(PList);                        //done compiled and checked
 
