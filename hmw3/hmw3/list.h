@@ -18,8 +18,8 @@ typedef void (*DESTROY_FUNC)(PElem);
 PList ListCreate(CLONE_FUNC, DESTROY_FUNC);    //done compiled and checked
 void ListDestroy(PList);
 Result ListAdd(PList, PElem);                   //done compiled and checked
-PElem ListGetFirst(PList);
-PElem ListGetNext(PList);
+PElem ListGetFirst(PList);						//done compiled and checked
+PElem ListGetNext(PList);						//done compiled and checked
 
 Result ListRemove(PList);
 int ListGetSize(PList);                        //done compiled and checked

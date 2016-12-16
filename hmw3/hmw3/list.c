@@ -11,7 +11,7 @@
 /* Define one node of the list*/
 typedef struct node_t {
 	PElem element;           //our element which can be any type
-	struct node_t* pNext;     //pointer to the next node on the list
+	struct node_t* pNext;     //pointer to the next node on the list towards the END
 } NODE, *PNODE;
 
 /* Define the list*/
@@ -132,8 +132,8 @@ PElem ListGetNext(PList s)
 		return NULL;
 	if (s->iterator == NULL)
 		return NULL;
-	if (s->iterator->pNext == NULL)  // Means we got to the end of the list  $$$$$ awating answer from the forum $$$$$$
-		return NULL;                
+	//if (s->iterator->pNext == NULL)  // Means we got to the end of the list  $$$$$ awating answer from the forum $$$$$$
+	//	return NULL;                
 
 	temp = s->iterator->element;
 	s->iterator = s->iterator->pNext;  // Move the iterator one next
@@ -141,6 +141,41 @@ PElem ListGetNext(PList s)
 	return temp;
 }
 
+/****************************
+*ListRemove function
+*The function removes the node that the itertor points for     $$$ need to use delete func and need to free memory alloc
+*Argument (PList List)
+*Output (Result) - did we succeed in deleteing the swag?
+*****************************/
+Result ListRemove(PList s)
+{
+	PNODE temp;
+
+	if (s == NULL)
+		return FAIL;
+	if (s->iterator == NULL)
+		return FAIL;
+	
+	//if ((dstr_elem(s->iterator->element)) == NULL)          //Activate after debug
+	//	return FAIL;                                        //Activate after debug
+
+	if (s->iterator == s->head)                      //means we need to change the head
+	{
+		temp = s->head;
+		s->head = s->head->pNext;
+		s->size--;
+
+		free(temp);									//free elememt  
+		return SUCCESS;
+	}
+	/*
+	else                                          // legal iterator and not head
+	{
+		temp = s->iterator;
+	}
+	*/
+	return SUCCESS;                       //Delete after debug
+}
 /****************************
 *ListGetSize function
 *Argument (PList List)
@@ -152,8 +187,6 @@ int ListGetSize(PList List)
 		return 0;
 	return List->size;
 }
-
-
 
 /*
 *Destroy function
@@ -177,7 +210,7 @@ int main()
 	char Elem2 = 'c';
 	int Elem3 = 5;
 	int godel;
-	PElem first_el, next_el_1, next_el_2, next_el_3;
+	PElem first_el, next_el_1, next_el_2, next_el_3, next_el_4;
 	
 	/* test ListCreate */
 	printf("Hola negritos\n");
@@ -206,17 +239,28 @@ int main()
 	printf("Recieve the 1st element DONE\n");
 
 	/* test ListGetNext */
+	/*
 	printf("Recieve the next element &1 \n");
 	next_el_1 = ListGetNext(trying);
 	printf("Recieve the next element &1 DONE\n");
-
+	
 	printf("Recieve the next element &2 \n");
 	next_el_2= ListGetNext(trying);
 	printf("Recieve the next element &2 DONE\n");
-
+	
 	printf("Recieve the next element &3 \n");
 	next_el_3 = ListGetNext(trying);
 	printf("Recieve the next element &3 DONE\n");
 
+	printf("Recieve the next element &4 Should return Null \n");
+	next_el_4 = ListGetNext(trying);
+	printf("Recieve the next element &4 DONE\n");
+	*/
+
+	/* test ListRemove */
+	printf("Remove the head \n");
+	Result res4 = ListRemove(trying);
+	printf("Remove the head is DONE\n");
+	
 	return 0;
 }
