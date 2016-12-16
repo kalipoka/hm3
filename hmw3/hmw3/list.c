@@ -9,7 +9,6 @@
 /*******DEFINITIONS*********/
 
 /* Define one node of the list*/
-
 typedef struct node_t {
 	PElem element;           //our element which can be any type
 	struct node_t* pNext;     //pointer to the next node on the list
@@ -93,6 +92,28 @@ Result ListAdd(PList s, PElem Elem)
 }
 
 /*
+*ListGetFirst function
+*function returns the 1st element and aslo put the iterator to the head of the list
+*Argument (PList s)
+*Output 1st element (PElem elem)
+*/
+
+PElem ListGetFirst(PList s)
+{
+	PElem temp;
+
+	if (s == NULL)
+		return NULL;
+
+	if (s->size == 0)   //means we do not have a first element cause list is empty
+		return NULL;
+
+	temp = s->head->element; // this is the 1st element
+	s->iterator = s->head;  //foloowing question instruction iterator needs to point to head
+	return temp;
+	
+}
+/*
 *ListGetSize function
 *Argument (PList List)
 *Output (int) - nuber of nodes
@@ -103,6 +124,8 @@ int ListGetSize(PList List)
 		return 0;
 	return List->size;
 }
+
+
 
 /*
 *Destroy function
@@ -118,17 +141,16 @@ void ListDestroy(PList s)
 */
 int main()
 {
+	/* Deeebugy */
+	PList trying;
 	CLONE_FUNC cpy_elem = 1;
 	DESTROY_FUNC dstr_elem = 1;
 	int Elem1 = 2;
 	char Elem2 = 'c';
 	int Elem3 = 5;
 	int godel;
-	PList trying;
-
-
-
-
+	PElem first_el;
+	
 
 	printf("Hola negritos\n");
 	trying = ListCreate(cpy_elem, dstr_elem);
@@ -147,6 +169,10 @@ int main()
 	printf("Adding the 3d Element (string type) DONE \n");
 
 	godel = ListGetSize(trying);
+
+	printf("Recieve the 1st element\n");
+	first_el = ListGetFirst(trying);
+	printf("Recieve the 1st element DONE\n");
 
 	return 0;
 }
