@@ -165,11 +165,28 @@ Result ListRemove(PList s)
 		s->head = s->head->pNext;
 		s->size--;
 
-		free(temp);									//free elememt  
+		free(temp);							//free elememt  
+		s->iterator = NULL;				
 		return SUCCESS;
 	}
+	
+	else
+	{
+		temp = s->head;
+		while (temp->pNext != s->iterator)                //searching for the element before the deleted one
+		{
+			temp = temp->pNext;
+		}
+		//here we found the element that is previous to the one that we need to delete
+		temp->pNext = s->iterator->pNext;
+		free(s->iterator);
+		s->size--;
+		s->iterator = NULL;
+		return SUCCESS;
+	}
+	
 	/*
-	else                                          // legal iterator and not head
+	else                                          // legal iterator and not the head
 	{
 		temp = s->iterator;
 	}
@@ -228,6 +245,8 @@ int main()
 	int Elem1 = 2;
 	char Elem2 = 'c';
 	int Elem3 = 5;
+	char Elem4[3] = "sne";
+
 	int godel;
 	PElem first_el, next_el_1, next_el_2, next_el_3, next_el_4;
 	
@@ -275,16 +294,25 @@ int main()
 	next_el_4 = ListGetNext(trying);
 	printf("Recieve the next element &4 DONE\n\n");
 	
-
-	//test ListRemove 
+	//test ListRemove #1 - remove head
 	printf("Remove the head \n");
 	Result res4 = ListRemove(trying);
 	printf("Remove the head is DONE\n\n");
-	*/
-
+	
 	//test ListDestroy
 	printf("Destroy The List \n");
 	ListDestroy(trying);
 	printf("Destroy The List DONE \n\n");
+	*/
+
+	Result res5 = ListAdd(trying, Elem4);
+
+	trying->iterator = trying->head->pNext->pNext;
+
+	//test ListRemove #2 - remove element from the middle
+	printf("Remove the middle element \n");
+	Result res6 = ListRemove(trying);
+	printf("Remove the middle element is DONE\n\n");
+
 	return 0;
 }

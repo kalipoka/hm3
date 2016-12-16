@@ -21,6 +21,6 @@ Result ListAdd(PList, PElem);                   //done compiled and checked
 PElem ListGetFirst(PList);						//done compiled and checked
 PElem ListGetNext(PList);						//done compiled and checked
 
-Result ListRemove(PList);                       // started - not complete yet
+Result ListRemove(PList);                       //done compiled and checked
 int ListGetSize(PList);                        //done compiled and checked
 
