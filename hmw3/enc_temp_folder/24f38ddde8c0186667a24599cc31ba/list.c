@@ -132,8 +132,8 @@ PElem ListGetNext(PList s)
 		return NULL;
 	if (s->iterator == NULL)
 		return NULL;
-	if (s->iterator->pNext == NULL)  // Means we got to the end of the list  $$$$$ awating answer from the forum $$$$$$
-		return NULL;                
+	if (s->iterator->pNext == NULL)  // Means we got to the end of the list
+		return NULL;
 
 	temp = s->iterator->element;
 	s->iterator = s->iterator->pNext;  // Move the iterator one next
