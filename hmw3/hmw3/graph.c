@@ -11,8 +11,8 @@ typedef struct _Graph* PGraph;
 
 typedef struct _Graph
 {
-	PVertex Vertex_head;   //not sure that enough parameters in the struct
-	PEdge Edge_head;	  //not sure that enough parameters in the struct
+	PVertex Vertex_set;   //not sure that enough parameters in the struct
+	PEdge Edge_set;	  //not sure that enough parameters in the struct, pointer to the 1st
 
 } Graph;
 
@@ -36,19 +36,19 @@ PGraph GraphCreate()
 	if (s == NULL)
 		return NULL;
 
-	s->Edge_head = SetCreate(cmpFunc, cloneFunc, destroyFunc);    //creates the 1st Edge (keshet)
-	if (s->Edge_head==NULL)
+	s->Edge_set = SetCreate(cmpFunc, cloneFunc, destroyFunc);    //creates the 1st Edge (keshet)
+	if (s->Edge_set==NULL)
 		return NULL;
 
-	s->Edge_head->nodeA = NULL;
-	s->Edge_head->nodeB = NULL;
-	s->Edge_head->weight = 0;
+	s->Edge_set->nodeA = NULL;
+	s->Edge_set->nodeB = NULL;
+	s->Edge_set->weight = 0;
 
-	s->Vertex_head = SetCreate(cmpFunc, cloneFunc, destroyFunc);   //creates the 1st Vertex (tsomet)
-	if (s->Vertex_head == NULL)
+	s->Vertex_set = SetCreate(cmpFunc, cloneFunc, destroyFunc);   //creates the 1st Vertex (tsomet)
+	if (s->Vertex_set == NULL)
 		return NULL;
 
-	s->Vertex_head->serialNumber = 0;
+	s->Vertex_set->serialNumber = 0;
 
 	return s;
 }
@@ -62,18 +62,19 @@ PGraph GraphCreate()
 
 Bool GraphAddVertex(PGraph s, int vertex_num)
 {
+	PVertex new_vertex = (PVertex)malloc(sizeof(Vertex));
 
 	/*Sanity Check*/
-	if ((s == NULL) || (vertex_num < 0))   //check if this check is fine
+	if ((s == NULL) || (vertex_num < 0))   //check if this check is fine mayber need more
 		return FALSE;
 	
-	if(s->Vertex_head->serialNumber!=vertex_num)  //covers 2 check: 1. if the vertex exists  2. if the number is legit
-		return FALSE;
+	//if(s->Vertex_set->serialNumber!=vertex_num)  //covers 2 check: 1. if the vertex exists  2. if the number is legit
+		//return FALSE;
 
-	if (SetAdd(s->Vertex_head, vertex_num) == FALSE) //adding the vertex to the Graph
-		return FALSE;
+	new_vertex->serialNumber = vertex_num;
 
-	s->Vertex_head->serialNumber++;
+	if (SetAdd(s->Vertex_set, new_vertex) == FALSE) //adding the vertex to the Graph
+		return FALSE;
 
 	return TRUE;
 }
@@ -85,9 +86,13 @@ int main()
 	tryingGraph = GraphCreate();
 	printf("The Graph was created DONE \n\n");
 
-	printf("Adding Vertex Check\n");
+	printf("Adding Vertex Check &0 \n");
 	Bool res1 = GraphAddVertex(tryingGraph, 0); // waiting for response from forum about adding zero Vertex
-	printf("The Vertex Was Added \n\n");
+	printf("The Vertex &0 Was Added \n\n");
+
+	printf("Adding Vertex Check &1 \n");
+	Bool res2 = GraphAddVertex(tryingGraph, 1); // waiting for response from forum about adding zero Vertex
+	printf("The Vertex &1 Was Added \n\n");
 
 	return 0;
 	
