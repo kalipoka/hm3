@@ -230,6 +230,7 @@ int ListGetSize(PList List)
 }
 
 /*********************************** Deeebugy & Testen ****************************************/
+/*
 int main()
 {
 	PList trying;
@@ -243,12 +244,12 @@ int main()
 	int godel;
 	PElem first_el, next_el_1, next_el_2, next_el_3, next_el_4, next_el_5;
 	
-	/* test ListCreate */
+	// test ListCreate 
 	printf("Hola negritos\n");
 	trying = ListCreate(cpy_elem, dstr_elem);
 	printf("The list was created\n\n");
 
-	/* test ListAdd */
+	// test ListAdd 
 	printf("Add the 1st Element (int type)\n");
 	Result res1 = ListAdd(trying, Elem1);
 	printf("Adding 1st Element DONE\n\n");
@@ -263,15 +264,15 @@ int main()
 
 	Result res5 = ListAdd(trying, Elem4);
 
-	/* test ListGetSize */
+	// test ListGetSize 
 	godel = ListGetSize(trying);
 
-	/* test ListGetFirst */
+	// test ListGetFirst 
 	printf("Recieve the 1st element\n");
 	first_el = ListGetFirst(trying);
 	printf("Recieve the 1st element DONE\n\n");
 
-	/* test ListGetNext */
+	//test ListGetNext 
 	
 	printf("Recieve the next element &1 \n");
 	next_el_1 = ListGetNext(trying);
@@ -293,7 +294,7 @@ int main()
 	next_el_5 = ListGetNext(trying);
 	printf("Recieve the next element &4 DONE\n\n");
 
-	/*
+	
 	//test ListRemove #1 - remove head
 	printf("Remove the head \n");
 	Result res4 = ListRemove(trying);
@@ -313,6 +314,7 @@ int main()
 	printf("Remove the middle element \n");
 	Result res6 = ListRemove(trying);
 	printf("Remove the middle element is DONE\n\n");
-	*/
+	
 	return 0;
 }
+*/

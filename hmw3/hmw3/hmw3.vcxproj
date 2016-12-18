@@ -20,6 +20,8 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="list.c" />
+    <ClCompile Include="set.c" />
+    <ClCompile Include="graph.c" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="graph.h" />
