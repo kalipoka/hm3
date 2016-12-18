@@ -132,11 +132,12 @@ PElem ListGetNext(PList s)
 		return NULL;
 	if (s->iterator == NULL)
 		return NULL;
-	//if (s->iterator->pNext == NULL)  // Means we got to the end of the list  $$$$$ awating answer from the forum $$$$$$
-	//	return NULL;                
+	if (s->iterator->pNext == NULL)  // Means we got to the end of the list  - absered in the forum
+		return NULL;                
 
-	temp = s->iterator->element;
 	s->iterator = s->iterator->pNext;  // Move the iterator one next
+
+	temp = s->iterator->element;	// select the element
 
 	return temp;
 }
@@ -240,7 +241,7 @@ int main()
 	char Elem4[3] = "sne";   
 
 	int godel;
-	PElem first_el, next_el_1, next_el_2, next_el_3, next_el_4;
+	PElem first_el, next_el_1, next_el_2, next_el_3, next_el_4, next_el_5;
 	
 	/* test ListCreate */
 	printf("Hola negritos\n");
@@ -260,6 +261,8 @@ int main()
 	Result res3 = ListAdd(trying, Elem3);
 	printf("Adding the 3d Element (string type) DONE \n\n");
 
+	Result res5 = ListAdd(trying, Elem4);
+
 	/* test ListGetSize */
 	godel = ListGetSize(trying);
 
@@ -269,7 +272,7 @@ int main()
 	printf("Recieve the 1st element DONE\n\n");
 
 	/* test ListGetNext */
-	/*
+	
 	printf("Recieve the next element &1 \n");
 	next_el_1 = ListGetNext(trying);
 	printf("Recieve the next element &1 DONE\n\n");
@@ -285,7 +288,12 @@ int main()
 	printf("Recieve the next element &4 Should return Null \n");
 	next_el_4 = ListGetNext(trying);
 	printf("Recieve the next element &4 DONE\n\n");
-	
+
+	printf("Recieve the next element &4 Should return Null \n");
+	next_el_5 = ListGetNext(trying);
+	printf("Recieve the next element &4 DONE\n\n");
+
+	/*
 	//test ListRemove #1 - remove head
 	printf("Remove the head \n");
 	Result res4 = ListRemove(trying);
@@ -295,7 +303,7 @@ int main()
 	printf("Destroy The List \n");
 	ListDestroy(trying);
 	printf("Destroy The List DONE \n\n");
-	*/
+	
 
 	Result res5 = ListAdd(trying, Elem4);
 	//here we delete the 3rd elemnts out of 4
@@ -305,6 +313,6 @@ int main()
 	printf("Remove the middle element \n");
 	Result res6 = ListRemove(trying);
 	printf("Remove the middle element is DONE\n\n");
-
+	*/
 	return 0;
 }
