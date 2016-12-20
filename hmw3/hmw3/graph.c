@@ -111,7 +111,6 @@ PGraph GraphCreate()
 *Argument (PGrapf s, int vertex_num)
 *Output (TRUE/FALSE)
 *****************************/
-
 Bool GraphAddVertex(PGraph s, int vertex_num)
 {
 	PVertex new_vertex = (PVertex)malloc(sizeof(Vertex));

@@ -24,7 +24,7 @@ typedef struct List_ {
 	PNODE iterator;         /* The ITERAOR ***************************should it be here?*/
 } List, *PList;
 
-/********************************FUCKTIONS*************************************/
+/********************************FUNCTIONS*************************************/
 
 /*****************************
 *ListCreate function
@@ -71,7 +71,7 @@ Result ListAdd(PList s, PElem Elem)
 	//check if the list is empy - has 0 nodes - we need to create the head - We did MALLOC for the head already
 	if (s->size == 0)
 	{
-		PElem tmp = cpy_elem(Elem);
+		PElem tmp = s->cpy_elem(Elem);
 		if (!tmp) return FAIL;
 		s->head->element=tmp;
 		s->head->pNext = NULL; // no next element
@@ -86,7 +86,7 @@ Result ListAdd(PList s, PElem Elem)
 
 		new_node->element = Elem;
 		new_node->pNext = s->head;
-		if ((s->head->element = cpy_elem(Elem)) == NULL)
+		if ((s->head->element = s->cpy_elem(Elem)) == NULL)
 			return FAIL;
 		s->head = new_node;
 	}
@@ -157,8 +157,8 @@ Result ListRemove(PList s)
 	if (s->iterator == NULL)
 		return FAIL;
 	
-	if ((dstr_elem(s->iterator->element)) == NULL)
-		return FAIL;
+	s->dstr_elem(s->iterator->element);
+	
 
 	if (s->iterator == s->head)                      //means we need to change the head
 	{
@@ -205,8 +205,7 @@ void ListDestroy(PList s)
 
 	while (tmp)
 	{
-		if ((dstr_elem(tmp->element)) == NULL)
-			return FAIL;
+		s->dstr_elem(tmp->element);
 		s->head = s->head->pNext;
 		free(tmp);
 		tmp = s->head;
