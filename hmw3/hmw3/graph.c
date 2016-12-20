@@ -11,10 +11,31 @@ typedef struct _Graph* PGraph;
 
 typedef struct _Graph
 {
-	PVertex Vertex_set;   //not sure that enough parameters in the struct
-	PEdge Edge_set;	  //not sure that enough parameters in the struct, pointer to the 1st
+	PVertex_Set Vertex_set;         //not sure that enough parameters in the struct
+	PEdge_Set Edge_set;	           //not sure that enough parameters in the struct, pointer to the 1st
 
-} Graph;
+} Graph, *PGraph;
+
+typedef struct _Vertex_Set
+{
+	PVertex Vertex;
+	/* Function Pointers */
+	COMP_FUNC vertex_cmp;
+	CLONE_FUNC vertex_clone;
+	DESTROY_FUNC vertex_destroy;
+} Vertex_Set, PVertex_Set;
+
+typedef struct _Vertex_Set
+{
+	PEdge Edge;
+	/* Function Pointers */
+	COMP_FUNC edge_cmp;
+	CLONE_FUNC edge_clone;
+	DESTROY_FUNC edge_destroy;
+} Edge_Set, PEdge_Set;
+
+
+
 
 CLONE_FUNC cloneFunc = 1;                    // $#%#$%#$%#$%#$#%#$% DELETE BEFORE SUBMIT - for COMPILE ONLY $#%#$%#$%#$%#$#%#$%/
 DESTROY_FUNC  destroyFunc = 1;				 // $#%#$%#$%#$%#$#%#$% DELETE BEFORE SUBMIT - for COMPILE ONLY $#%#$%#$%#$%#$#%#$%/
@@ -40,15 +61,9 @@ PGraph GraphCreate()
 	if (s->Edge_set==NULL)
 		return NULL;
 
-	s->Edge_set->nodeA = NULL;
-	s->Edge_set->nodeB = NULL;
-	s->Edge_set->weight = 0;
-
 	s->Vertex_set = SetCreate(cmpFunc, cloneFunc, destroyFunc);   //creates the 1st Vertex (tsomet)
 	if (s->Vertex_set == NULL)
 		return NULL;
-
-	s->Vertex_set->serialNumber = 0;
 
 	return s;
 }
