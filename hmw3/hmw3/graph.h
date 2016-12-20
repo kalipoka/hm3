@@ -25,8 +25,8 @@ typedef struct _Edge
 typedef struct _Vertex* PVertex;
 typedef struct _Edge* PEdge;
 
-PGraph GraphCreate();
-void GraphDestroy(PGraph);
+PGraph GraphCreate();              // esh
+void GraphDestroy(PGraph);            //
 Bool GraphAddVertex(PGraph, int);
 Bool GraphAddEdge(PGraph pGraph, int vertex1, int vertex2, int weight);
 PSet GraphNeighborVertices(PGraph, int);
