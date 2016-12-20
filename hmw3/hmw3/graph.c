@@ -129,7 +129,9 @@ Bool GraphAddVertex(PGraph s, int vertex_num)
 
 
 Bool GraphAddEdge(PGraph pGraph, int vertex1, int vertex2, int weight);
+
 PSet GraphNeighborVertices(PGraph, int);
+
 Bool GraphFindShortestPath(PGraph pGraph, int source, int* dist, int* prev);
 
 int GraphGetNumberOfEdges(PGraph);
