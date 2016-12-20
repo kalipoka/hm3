@@ -28,14 +28,14 @@ typedef struct _Edge* PEdge;
 PGraph GraphCreate(); /*DONE*/
 void GraphDestroy(PGraph); /*Ofir*/
 Bool GraphAddVertex(PGraph, int); /*DONE*/
-Bool GraphAddEdge(PGraph pGraph, int vertex1, int vertex2, int weight); /*Ofir*/
+Bool GraphAddEdge(PGraph pGraph, int vertex1, int vertex2, int weight); /*Alex*/
 PSet GraphNeighborVertices(PGraph, int); /*Alex*/
 Bool GraphFindShortestPath(PGraph pGraph, int source, int* dist, int* prev); 
 
-int GraphGetNumberOfEdges(PGraph); /*Ofir*/ 
-int GraphGetNumberOfVertices(PGraph); /*Alex*/
+int GraphGetNumberOfEdges(PGraph); /*Ofir  -DONE*/ 
+int GraphGetNumberOfVertices(PGraph); /*Alex  -DONE*/
 
-PSet GraphVerticesStatus(PGraph); /*Alex*/
-PSet GraphEdgesStatus(PGraph); /*Ofir*/
+PSet GraphVerticesStatus(PGraph); /*Alex -DONE*/
+PSet GraphEdgesStatus(PGraph); /*Ofir  -DONE*/
 
 #endif /* GRAPH_H_ */
