@@ -28,7 +28,7 @@ typedef struct _Edge* PEdge;
 PGraph GraphCreate(); /*DONE*/
 void GraphDestroy(PGraph); /*Ofir*/
 Bool GraphAddVertex(PGraph, int); /*DONE*/
-Bool GraphAddEdge(PGraph pGraph, int vertex1, int vertex2, int weight); /*Alex*/
+Bool GraphAddEdge(PGraph pGraph, int vertex1, int vertex2, int weight); /*Alex - DONE*/
 PSet GraphNeighborVertices(PGraph, int); /*Alex*/
 Bool GraphFindShortestPath(PGraph pGraph, int source, int* dist, int* prev); 
 

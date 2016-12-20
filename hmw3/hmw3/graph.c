@@ -136,23 +136,21 @@ Bool GraphAddEdge(PGraph s, int vertex1, int vertex2, int weight)
 		return FALSE;
    /* here we check if those vertexes are exist*/
 
-	if ((SetFindElement(s->Edge_set, vertex1) == NULL)) //means we don't have it 
-		return FALSE;
+	//if ((SetFindElement(s->Edge_set, vertex1) == NULL)) //means we don't have it 
+	//	return FALSE;
 
-	if ((SetFindElement(s->Edge_set, vertex2) == NULL)) //means we don't have it 
-		return FALSE;
+	//if ((SetFindElement(s->Edge_set, vertex2) == NULL)) //means we don't have it 
+	//	return FALSE;
 
 	new_edge->nodeA = vertex1;
 	new_edge->nodeB = vertex2;
 	new_edge->weight = weight;
-
+	// to check it  keshet exists
 	if (SetAdd(s->Edge_set, new_edge) == FALSE) //adding the vertex to the Graph
 		return FALSE;
 
 	return TRUE;
 }
-
-Bool GraphAddEdge(PGraph pGraph, int vertex1, int vertex2, int weight);
 
 PSet GraphNeighborVertices(PGraph, int);
 
@@ -196,14 +194,37 @@ int main()
 	printf("Hola negritos Creating Graph\n");
 	tryingGraph = GraphCreate();
 	printf("The Graph was created DONE \n\n");
-
+	
 	printf("Adding Vertex Check &0 \n");
 	Bool res1 = GraphAddVertex(tryingGraph, 0); // waiting for response from forum about adding zero Vertex
-	printf("The Vertex &0 Was Added \n\n");
+		if (res1 == FALSE)
+			printf("Adding Vertex Check &0 FAILED \n\n");
 
 	printf("Adding Vertex Check &1 \n");
 	Bool res2 = GraphAddVertex(tryingGraph, 1); // waiting for response from forum about adding zero Vertex
-	printf("The Vertex &1 Was Added \n\n");
+	if (res2 == FALSE)
+		printf("Adding Vertex Check &1 FAILED \n\n");
+
+	printf("Adding Vertex Check &2 \n");
+	Bool res6 = GraphAddVertex(tryingGraph, 2); // waiting for response from forum about adding zero Vertex
+	if (res6 == FALSE)
+		printf("Adding Vertex Check &2 FAILED \n\n");
+	
+
+	printf("Adding Edge Check &0 \n");
+	Bool res3 = GraphAddEdge(tryingGraph, 0, 1, 3);
+	if (res3 == FALSE)
+		printf("Adding Edge Check &0 FAILED \n\n");
+
+	printf("Adding Edge Check &1 \n");
+	Bool res4 = GraphAddEdge(tryingGraph, 1, 0, 3);
+	if (res4 == FALSE)
+		printf("Adding Edge Check &1 FAILED - cause you are fucking nigha \n\n");
+
+	printf("Adding Edge Check &2 \n");
+	Bool res5 = GraphAddEdge(tryingGraph, 1, 2, 3);
+	if (res5 == FALSE)
+		printf("Adding Edge Check &2 FAILED \n\n");
 
 
 	printf("number of vertex %d \n\n", GraphGetNumberOfVertices(tryingGraph));
