@@ -25,17 +25,17 @@ typedef struct _Edge
 typedef struct _Vertex* PVertex;
 typedef struct _Edge* PEdge;
 
-PGraph GraphCreate();
-void GraphDestroy(PGraph);
-Bool GraphAddVertex(PGraph, int);
-Bool GraphAddEdge(PGraph pGraph, int vertex1, int vertex2, int weight);
-PSet GraphNeighborVertices(PGraph, int);
-Bool GraphFindShortestPath(PGraph pGraph, int source, int* dist, int* prev);
+PGraph GraphCreate(); /*DONE*/
+void GraphDestroy(PGraph); /*Ofir*/
+Bool GraphAddVertex(PGraph, int); /*DONE*/
+Bool GraphAddEdge(PGraph pGraph, int vertex1, int vertex2, int weight); /*Ofir*/
+PSet GraphNeighborVertices(PGraph, int); /*Alex*/
+Bool GraphFindShortestPath(PGraph pGraph, int source, int* dist, int* prev); 
 
-int GraphGetNumberOfEdges(PGraph);
-int GraphGetNumberOfVertices(PGraph);
+int GraphGetNumberOfEdges(PGraph); /*Ofir*/ 
+int GraphGetNumberOfVertices(PGraph); /*Alex*/
 
-PSet GraphVerticesStatus(PGraph);
-PSet GraphEdgesStatus(PGraph);
+PSet GraphVerticesStatus(PGraph); /*Alex*/
+PSet GraphEdgesStatus(PGraph); /*Ofir*/
 
 #endif /* GRAPH_H_ */
