@@ -25,7 +25,7 @@ typedef struct _Vertex_Set
 	DESTROY_FUNC vertex_destroy;
 } Vertex_Set, PVertex_Set;
 
-typedef struct _Vertex_Set
+typedef struct _Edge_Set
 {
 	PEdge Edge;
 	/* Function Pointers */
@@ -34,12 +34,6 @@ typedef struct _Vertex_Set
 	DESTROY_FUNC edge_destroy;
 } Edge_Set, PEdge_Set;
 
-
-
-
-CLONE_FUNC cloneFunc = 1;                    // $#%#$%#$%#$%#$#%#$% DELETE BEFORE SUBMIT - for COMPILE ONLY $#%#$%#$%#$%#$#%#$%/
-DESTROY_FUNC  destroyFunc = 1;				 // $#%#$%#$%#$%#$#%#$% DELETE BEFORE SUBMIT - for COMPILE ONLY $#%#$%#$%#$%#$#%#$%/
-COMP_FUNC cmpFunc = 1;						 // $#%#$%#$%#$%#$#%#$% DELETE BEFORE SUBMIT - for COMPILE ONLY $#%#$%#$%#$%#$#%#$%/
 /********************************FUNCTIONS*************************************/
 
 /*****************************
@@ -57,12 +51,10 @@ PGraph GraphCreate()
 	if (s == NULL)
 		return NULL;
 
-	s->Edge_set = SetCreate(cmpFunc, cloneFunc, destroyFunc);    //creates the 1st Edge (keshet)
-	if (s->Edge_set==NULL)
+	if (NULL == (s->Edge_set = SetCreate(cmp_edg, clone_edg, destroy_edg)))    //creates the 1st Edge (keshet)
 		return NULL;
 
-	s->Vertex_set = SetCreate(cmpFunc, cloneFunc, destroyFunc);   //creates the 1st Vertex (tsomet)
-	if (s->Vertex_set == NULL)
+	if (NULL == (s->Vertex_set = SetCreate(cmp_ver, clone_ver, destroy_ver)))
 		return NULL;
 
 	return s;
@@ -83,9 +75,6 @@ Bool GraphAddVertex(PGraph s, int vertex_num)
 	if ((s == NULL) || (vertex_num < 0))   //check if this check is fine mayber need more
 		return FALSE;
 	
-	//if(s->Vertex_set->serialNumber!=vertex_num)  //covers 2 check: 1. if the vertex exists  2. if the number is legit
-		//return FALSE;
-
 	new_vertex->serialNumber = vertex_num;
 
 	if (SetAdd(s->Vertex_set, new_vertex) == FALSE) //adding the vertex to the Graph
@@ -93,6 +82,20 @@ Bool GraphAddVertex(PGraph s, int vertex_num)
 
 	return TRUE;
 }
+
+
+Bool GraphAddEdge(PGraph pGraph, int vertex1, int vertex2, int weight);
+PSet GraphNeighborVertices(PGraph, int);
+Bool GraphFindShortestPath(PGraph pGraph, int source, int* dist, int* prev);
+
+int GraphGetNumberOfEdges(PGraph);
+int GraphGetNumberOfVertices(PGraph);
+
+PSet GraphVerticesStatus(PGraph);
+PSet GraphEdgesStatus(PGraph);
+void GraphDestroy(PGraph)
+
+
 /*********************************** Deeebugy & Testen ****************************************/
 int main()
 {
