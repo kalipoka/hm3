@@ -127,6 +127,30 @@ Bool GraphAddVertex(PGraph s, int vertex_num)
 	return TRUE;
 }
 
+Bool GraphAddEdge(PGraph s, int vertex1, int vertex2, int weight)
+{
+	PEdge new_edge = (PEdge)malloc(sizeof(Edge));
+
+	/*Sanity Check*/
+	if ((s == NULL) || (vertex1 < 0) || (vertex2 < 0) || (weight < 0))   //check if this check is fine mayber need more
+		return FALSE;
+   /* here we check if those vertexes are exist*/
+
+	if ((SetFindElement(s->Edge_set, vertex1) == NULL)) //means we don't have it 
+		return FALSE;
+
+	if ((SetFindElement(s->Edge_set, vertex2) == NULL)) //means we don't have it 
+		return FALSE;
+
+	new_edge->nodeA = vertex1;
+	new_edge->nodeB = vertex2;
+	new_edge->weight = weight;
+
+	if (SetAdd(s->Edge_set, new_edge) == FALSE) //adding the vertex to the Graph
+		return FALSE;
+
+	return TRUE;
+}
 
 Bool GraphAddEdge(PGraph pGraph, int vertex1, int vertex2, int weight);
 
