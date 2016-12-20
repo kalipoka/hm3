@@ -11,28 +11,73 @@ typedef struct _Graph* PGraph;
 
 typedef struct _Graph
 {
-	PVertex_Set Vertex_set;         //not sure that enough parameters in the struct
-	PEdge_Set Edge_set;	           //not sure that enough parameters in the struct, pointer to the 1st
+	PSet Vertex_set;         //not sure that enough parameters in the struct
+	PSet Edge_set;	           //not sure that enough parameters in the struct, pointer to the 1st
 
 } Graph, *PGraph;
 
-typedef struct _Vertex_Set
-{
-	PVertex Vertex;
-	/* Function Pointers */
-	COMP_FUNC vertex_cmp;
-	CLONE_FUNC vertex_clone;
-	DESTROY_FUNC vertex_destroy;
-} Vertex_Set, PVertex_Set;
+/********************************HELPERS***************************************/
 
-typedef struct _Edge_Set
+static DESTROY_FUNC destroy_ver(PElem pElem)
 {
-	PEdge Edge;
-	/* Function Pointers */
-	COMP_FUNC edge_cmp;
-	CLONE_FUNC edge_clone;
-	DESTROY_FUNC edge_destroy;
-} Edge_Set, PEdge_Set;
+	PVertex pVer = (PVertex)pElem;
+	free(pVer);
+}
+
+static DESTROY_FUNC destroy_edg(PElem pElem)
+{
+	PEdge pEdge = (PEdge)pElem;
+	free(pEdge);
+}
+
+static COMP_FUNC cmp_edg(PElem pElem1, PElem pElem2) {
+	if (!pElem1 || !pElem2) return FALSE;
+	PEdge pEdge1 = (PEdge)pElem1;
+	PEdge pEdge2 = (PEdge)pElem2;
+
+	if (((pEdge1->nodeA == pEdge2->nodeA) && (pEdge1->nodeB == pEdge2->nodeB)) || ((pEdge1->nodeA == pEdge2->nodeB) && (pEdge1->nodeB == pEdge2->nodeA)) ){
+		if (pEdge1->weight == pEdge2->weight)
+			return TRUE;
+	}
+	return FALSE;
+}
+
+static COMP_FUNC cmp_ver(PElem pElem1, PElem pElem2) {
+	if (!pElem1 || !pElem2) return FALSE;
+	PVertex pVer1 = (PVertex)pElem1;
+	PVertex pVer2 = (PVertex)pElem2;
+
+	if (pVer1->serialNumber == pVer2->serialNumber)
+			return TRUE;
+	return FALSE;
+}
+
+static PElem clone_edg(PElem pElem)
+{
+	if (!pElem) return NULL; 
+	PEdge pEdge_src = (PEdge) pElem;
+	PEdge pEdge_new;
+	pEdge_new =(PEdge)malloc(sizeof(Edge));
+	if (!pEdge_new) return NULL; // ALLOC CHECK
+
+	pEdge_new->nodeA = pEdge_src->nodeA;
+	pEdge_new->nodeB = pEdge_src->nodeB;
+	pEdge_new->weight = pEdge_src->weight;
+
+	return pEdge_new;
+}
+
+static PElem clone_ver(PElem pElem)
+{
+	if (!pElem) return NULL;
+	PVertex pVertex_src = (PVertex)pElem;
+	PVertex pVertex_new;
+	pVertex_new = (PVertex)malloc(sizeof(Vertex));
+	if (!pVertex_new) return NULL; // ALLOC CHECK
+
+	pVertex_new->serialNumber = pVertex_src->serialNumber;
+	return pVertex_new;
+}
 
 /********************************FUNCTIONS*************************************/
 
@@ -47,7 +92,7 @@ typedef struct _Edge_Set
 PGraph GraphCreate()
 {
 	PGraph s;
-	s = (PList)malloc(sizeof(Graph));            //Memory ALLOCITA
+	s = (PGraph)malloc(sizeof(Graph));            //Memory ALLOCITA
 	if (s == NULL)
 		return NULL;
 
@@ -93,7 +138,7 @@ int GraphGetNumberOfVertices(PGraph);
 
 PSet GraphVerticesStatus(PGraph);
 PSet GraphEdgesStatus(PGraph);
-void GraphDestroy(PGraph)
+void GraphDestroy(PGraph);
 
 
 /*********************************** Deeebugy & Testen ****************************************/

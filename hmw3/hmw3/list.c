@@ -19,8 +19,8 @@ struct List_;
 typedef struct List_ {
 	PNODE head;				/* head of the linked list not sure of this element is needed here */
 	int size;				/* the number of elements in the list */
-	CLONE_FUNC cpy_elem;	/* Clone elemnt function */
-	DESTROY_FUNC dstr_elem; /* Destroy elemnt function */
+	CLONE_FUNC cpy_elem;	/* Clone element function */
+	DESTROY_FUNC dstr_elem; /* Destroy element function */
 	PNODE iterator;         /* The ITERAOR ***************************should it be here?*/
 } List, *PList;
 
@@ -71,10 +71,10 @@ Result ListAdd(PList s, PElem Elem)
 	//check if the list is empy - has 0 nodes - we need to create the head - We did MALLOC for the head already
 	if (s->size == 0)
 	{
-		//if ((s->head->element = cpy_elem(Elem)) == NULL)          //Activate after debug
-		s->head->element = Elem;									//Delete after debug
-		//	return FAIL;											//Activate after debug
-		s->head->pNext = NULL; // no next elemnts yet
+		PElem tmp = cpy_elem(Elem);
+		if (!tmp) return FAIL;
+		s->head->element=tmp;
+		s->head->pNext = NULL; // no next element
 	}
 
 	//we have a head already - insert the new element to the head, and keep the previous element
@@ -86,9 +86,9 @@ Result ListAdd(PList s, PElem Elem)
 
 		new_node->element = Elem;
 		new_node->pNext = s->head;
-		//if ((s->head->element = cpy_elem(Elem)) == NULL)   //Activate after debug
-		//	return FAIL;                                     //Activate after debug
-		s->head = new_node;							//Delete after debug
+		if ((s->head->element = cpy_elem(Elem)) == NULL)
+			return FAIL;
+		s->head = new_node;
 	}
 	s->size++;
 	s->iterator = NULL; // illegal as stated in function description
@@ -157,8 +157,8 @@ Result ListRemove(PList s)
 	if (s->iterator == NULL)
 		return FAIL;
 	
-	//if ((dstr_elem(s->iterator->element)) == NULL)          //Activate after debug
-	//	return FAIL;                                        //Activate after debug
+	if ((dstr_elem(s->iterator->element)) == NULL)
+		return FAIL;
 
 	if (s->iterator == s->head)                      //means we need to change the head
 	{
@@ -205,8 +205,8 @@ void ListDestroy(PList s)
 
 	while (tmp)
 	{
-		//if ((dstr_elem(tmp->element)) == NULL)          //Activate after debug &&&&&&&&&&&&&&&&&&&&&&&&
-		//	return FAIL;                                        //Activate after debug &&&&&&&&&&&&&&&&&&&&&
+		if ((dstr_elem(tmp->element)) == NULL)
+			return FAIL;
 		s->head = s->head->pNext;
 		free(tmp);
 		tmp = s->head;
