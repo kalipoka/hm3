@@ -11,14 +11,74 @@ typedef struct _Graph* PGraph;
 
 typedef struct _Graph
 {
-	PVertex Vertex_set;   //not sure that enough parameters in the struct
-	PEdge Edge_set;	  //not sure that enough parameters in the struct, pointer to the 1st
+	PSet Vertex_set;         //not sure that enough parameters in the struct
+	PSet Edge_set;	           //not sure that enough parameters in the struct, pointer to the 1st
 
-} Graph;
+} Graph, *PGraph;
 
-CLONE_FUNC cloneFunc = 1;                    // $#%#$%#$%#$%#$#%#$% DELETE BEFORE SUBMIT - for COMPILE ONLY $#%#$%#$%#$%#$#%#$%/
-DESTROY_FUNC  destroyFunc = 1;				 // $#%#$%#$%#$%#$#%#$% DELETE BEFORE SUBMIT - for COMPILE ONLY $#%#$%#$%#$%#$#%#$%/
-COMP_FUNC cmpFunc = 1;						 // $#%#$%#$%#$%#$#%#$% DELETE BEFORE SUBMIT - for COMPILE ONLY $#%#$%#$%#$%#$#%#$%/
+/********************************HELPERS***************************************/
+
+static DESTROY_FUNC destroy_ver(PElem pElem)
+{
+	PVertex pVer = (PVertex)pElem;
+	free(pVer);
+}
+
+static DESTROY_FUNC destroy_edg(PElem pElem)
+{
+	PEdge pEdge = (PEdge)pElem;
+	free(pEdge);
+}
+
+static COMP_FUNC cmp_edg(PElem pElem1, PElem pElem2) {
+	if (!pElem1 || !pElem2) return FALSE;
+	PEdge pEdge1 = (PEdge)pElem1;
+	PEdge pEdge2 = (PEdge)pElem2;
+
+	if (((pEdge1->nodeA == pEdge2->nodeA) && (pEdge1->nodeB == pEdge2->nodeB)) || ((pEdge1->nodeA == pEdge2->nodeB) && (pEdge1->nodeB == pEdge2->nodeA)) ){
+		if (pEdge1->weight == pEdge2->weight)
+			return TRUE;
+	}
+	return FALSE;
+}
+
+static COMP_FUNC cmp_ver(PElem pElem1, PElem pElem2) {
+	if (!pElem1 || !pElem2) return FALSE;
+	PVertex pVer1 = (PVertex)pElem1;
+	PVertex pVer2 = (PVertex)pElem2;
+
+	if (pVer1->serialNumber == pVer2->serialNumber)
+			return TRUE;
+	return FALSE;
+}
+
+static PElem clone_edg(PElem pElem)
+{
+	if (!pElem) return NULL; 
+	PEdge pEdge_src = (PEdge) pElem;
+	PEdge pEdge_new;
+	pEdge_new =(PEdge)malloc(sizeof(Edge));
+	if (!pEdge_new) return NULL; // ALLOC CHECK
+
+	pEdge_new->nodeA = pEdge_src->nodeA;
+	pEdge_new->nodeB = pEdge_src->nodeB;
+	pEdge_new->weight = pEdge_src->weight;
+
+	return pEdge_new;
+}
+
+static PElem clone_ver(PElem pElem)
+{
+	if (!pElem) return NULL;
+	PVertex pVertex_src = (PVertex)pElem;
+	PVertex pVertex_new;
+	pVertex_new = (PVertex)malloc(sizeof(Vertex));
+	if (!pVertex_new) return NULL; // ALLOC CHECK
+
+	pVertex_new->serialNumber = pVertex_src->serialNumber;
+	return pVertex_new;
+}
+
 /********************************FUNCTIONS*************************************/
 
 /*****************************
@@ -32,23 +92,15 @@ COMP_FUNC cmpFunc = 1;						 // $#%#$%#$%#$%#$#%#$% DELETE BEFORE SUBMIT - for C
 PGraph GraphCreate()
 {
 	PGraph s;
-	s = (PList)malloc(sizeof(Graph));            //Memory ALLOCITA
+	s = (PGraph)malloc(sizeof(Graph));            //Memory ALLOCITA
 	if (s == NULL)
 		return NULL;
 
-	s->Edge_set = SetCreate(cmpFunc, cloneFunc, destroyFunc);    //creates the 1st Edge (keshet)
-	if (s->Edge_set==NULL)
+	if (NULL == (s->Edge_set = SetCreate(cmp_edg, clone_edg, destroy_edg)))    //creates the 1st Edge (keshet)
 		return NULL;
 
-	s->Edge_set->nodeA = NULL;
-	s->Edge_set->nodeB = NULL;
-	s->Edge_set->weight = 0;
-
-	s->Vertex_set = SetCreate(cmpFunc, cloneFunc, destroyFunc);   //creates the 1st Vertex (tsomet)
-	if (s->Vertex_set == NULL)
+	if (NULL == (s->Vertex_set = SetCreate(cmp_ver, clone_ver, destroy_ver)))
 		return NULL;
-
-	s->Vertex_set->serialNumber = 0;
 
 	return s;
 }
@@ -68,9 +120,6 @@ Bool GraphAddVertex(PGraph s, int vertex_num)
 	if ((s == NULL) || (vertex_num < 0))   //check if this check is fine mayber need more
 		return FALSE;
 	
-	//if(s->Vertex_set->serialNumber!=vertex_num)  //covers 2 check: 1. if the vertex exists  2. if the number is legit
-		//return FALSE;
-
 	new_vertex->serialNumber = vertex_num;
 
 	if (SetAdd(s->Vertex_set, new_vertex) == FALSE) //adding the vertex to the Graph
@@ -78,6 +127,20 @@ Bool GraphAddVertex(PGraph s, int vertex_num)
 
 	return TRUE;
 }
+
+
+Bool GraphAddEdge(PGraph pGraph, int vertex1, int vertex2, int weight);
+PSet GraphNeighborVertices(PGraph, int);
+Bool GraphFindShortestPath(PGraph pGraph, int source, int* dist, int* prev);
+
+int GraphGetNumberOfEdges(PGraph);
+int GraphGetNumberOfVertices(PGraph);
+
+PSet GraphVerticesStatus(PGraph);
+PSet GraphEdgesStatus(PGraph);
+void GraphDestroy(PGraph);
+
+
 /*********************************** Deeebugy & Testen ****************************************/
 int main()
 {
