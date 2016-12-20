@@ -158,11 +158,34 @@ PSet GraphNeighborVertices(PGraph, int);
 
 Bool GraphFindShortestPath(PGraph pGraph, int source, int* dist, int* prev);
 
-int GraphGetNumberOfEdges(PGraph);
-int GraphGetNumberOfVertices(PGraph);
+int GraphGetNumberOfEdges(PGraph s)
+{
+	if (!s) return NULL;
+	return SetGetSize(s->Edge_set);
+}
 
-PSet GraphVerticesStatus(PGraph);
-PSet GraphEdgesStatus(PGraph);
+
+int GraphGetNumberOfVertices(PGraph s)
+{
+	if (!s) return NULL;
+	return SetGetSize(s->Vertex_set);
+}
+
+
+PSet GraphVerticesStatus(PGraph s)
+{
+	if (!s) return NULL;
+	return s->Vertex_set;
+}
+
+
+PSet GraphEdgesStatus(PGraph s)
+{
+	if (!s) return NULL;
+	return s->Edge_set;
+}
+
+
 void GraphDestroy(PGraph);
 
 
@@ -181,6 +204,11 @@ int main()
 	printf("Adding Vertex Check &1 \n");
 	Bool res2 = GraphAddVertex(tryingGraph, 1); // waiting for response from forum about adding zero Vertex
 	printf("The Vertex &1 Was Added \n\n");
+
+
+	printf("number of vertex %d \n\n", GraphGetNumberOfVertices(tryingGraph));
+
+	printf("number of Edges %d \n\n", GraphGetNumberOfEdges(tryingGraph));
 
 	return 0;
 	
