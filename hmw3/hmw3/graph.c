@@ -279,7 +279,7 @@ int main()
 	printf("The Graph was created DONE \n\n");
 	
 	printf("Adding Vertex Check &0 \n");
-	Bool res1 = GraphAddVertex(tryingGraph, 3); // waiting for response from forum about adding zero Vertex
+	Bool res1 = GraphAddVertex(tryingGraph, 0); // waiting for response from forum about adding zero Vertex
 		if (res1 == FALSE)
 			printf("Adding Vertex Check &0 FAILED \n\n");
 
@@ -301,24 +301,24 @@ int main()
 
 
 	printf("Adding Edge Check &0 \n");
-	Bool res3 = GraphAddEdge(tryingGraph, 1, 2, 3);
+	Bool res3 = GraphAddEdge(tryingGraph, 0, 1, 3);
 	if (res3 == FALSE)
 		printf("Adding Edge Check &0 FAILED \n\n");
 
 	print_edges_list(tryingGraph);
 
 	printf("Adding Edge Check &1 \n");
-	Bool res4 = GraphAddEdge(tryingGraph, 3, 1, 3);
+	Bool res4 = GraphAddEdge(tryingGraph, 0, 2, 3);
 	if (res4 == FALSE)
 		printf("Adding Edge Check &1 FAILED - cause you are fucking nigha \n\n");
 
 	print_edges_list(tryingGraph);
-
+	/*
 	printf("Adding Edge Check &2 \n");
 	Bool res5 = GraphAddEdge(tryingGraph, 1, 2, 3);
 	if (res5 == FALSE)
 		printf("Adding Edge Check &2 FAILED \n\n");
-
+    */
 	printf("number of vertex %d \n\n", GraphGetNumberOfVertices(tryingGraph));
 
 	printf("number of Edges %d \n\n", GraphGetNumberOfEdges(tryingGraph));
@@ -326,11 +326,12 @@ int main()
 
 	print_edges_list(tryingGraph);
 
+	GraphDestroy(tryingGraph);
+
 	printf("number of vertex %d \n\n", GraphGetNumberOfVertices(tryingGraph));
 
 	printf("number of Edges %d \n\n", GraphGetNumberOfEdges(tryingGraph));
 
-	GraphDestroy(tryingGraph);
 
 	return 0;	
 }
