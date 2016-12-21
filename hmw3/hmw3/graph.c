@@ -7,42 +7,86 @@
 #include "graph.h"
 
 /************************DEFINITIONS**********************/
-typedef struct _Graph* PGraph;
-
-typedef struct _Graph
-{
+struct _Graph;
+typedef struct _Graph{
 	PSet Vertex_set;         //not sure that enough parameters in the struct
 	PSet Edge_set;	           //not sure that enough parameters in the struct, pointer to the 1st
 
-} Graph, *PGraph;
+} Graph;
 
 /********************************HELPERS***************************************/
 
-static DESTROY_FUNC destroy_ver(PElem pElem)
+static void print_vertex_list(PGraph s)
+{
+	PElem elem = SetGetFirst(s->Vertex_set);
+	printf("\nverteces in list:\n");
+	while (elem)
+	{
+		PVertex ver = (PVertex)elem;
+		printf("%d\n", ver->serialNumber);
+		elem = SetGetNext(s->Vertex_set);
+	}
+}
+
+static void print_edges_list(PGraph s)
+{
+	PElem elem = SetGetFirst(s->Edge_set);
+	printf("\nedges in list:\n");
+	while (elem)
+	{
+		PEdge ver = (PEdge)elem;
+		printf("{%d, %d}\n", ver->nodeA->serialNumber, ver->nodeA->serialNumber, ver->weight);
+		elem = SetGetNext(s->Edge_set);
+	}
+}
+
+
+static PElem find_vertex(PGraph s, PElem pElem)
+{
+	return SetFindElement(s->Vertex_set, pElem);
+}
+
+static PElem find_vertex_by_num(PGraph s, int serial)
+{
+	PElem elem = SetGetFirst(s->Vertex_set);
+	
+	while (elem)
+	{
+		PVertex ver = (PVertex)elem;
+		if (ver->serialNumber == serial)
+			return elem;
+		elem = SetGetNext(s->Vertex_set);
+	}
+	return NULL;
+}
+
+static PElem find_edge(PGraph s, PElem pElem)
+{
+	return SetFindElement(s->Edge_set, pElem);
+}
+
+static void destroy_ver(PElem pElem)
 {
 	PVertex pVer = (PVertex)pElem;
 	free(pVer);
 }
 
-static DESTROY_FUNC destroy_edg(PElem pElem)
+static void destroy_edg(PElem pElem)
 {
 	PEdge pEdge = (PEdge)pElem;
 	free(pEdge);
 }
 
-static COMP_FUNC cmp_edg(PElem pElem1, PElem pElem2) {
+static Bool cmp_edg(PElem pElem1, PElem pElem2) {
 	if (!pElem1 || !pElem2) return FALSE;
 	PEdge pEdge1 = (PEdge)pElem1;
 	PEdge pEdge2 = (PEdge)pElem2;
 
-	if (((pEdge1->nodeA == pEdge2->nodeA) && (pEdge1->nodeB == pEdge2->nodeB)) || ((pEdge1->nodeA == pEdge2->nodeB) && (pEdge1->nodeB == pEdge2->nodeA)) ){
-		if (pEdge1->weight == pEdge2->weight)
-			return TRUE;
-	}
+	if (((pEdge1->nodeA == pEdge2->nodeA) && (pEdge1->nodeB == pEdge2->nodeB)) || ((pEdge1->nodeA == pEdge2->nodeB) && (pEdge1->nodeB == pEdge2->nodeA)))
 	return FALSE;
 }
 
-static COMP_FUNC cmp_ver(PElem pElem1, PElem pElem2) {
+static Bool cmp_ver(PElem pElem1, PElem pElem2) {
 	if (!pElem1 || !pElem2) return FALSE;
 	PVertex pVer1 = (PVertex)pElem1;
 	PVertex pVer2 = (PVertex)pElem2;
@@ -113,12 +157,15 @@ PGraph GraphCreate()
 *****************************/
 Bool GraphAddVertex(PGraph s, int vertex_num)
 {
-	PVertex new_vertex = (PVertex)malloc(sizeof(Vertex));
-
 	/*Sanity Check*/
 	if ((s == NULL) || (vertex_num < 0))   //check if this check is fine mayber need more
 		return FALSE;
 	
+	if (find_vertex_by_num(s, vertex_num)) //if we've found a similar vertex
+		return FALSE;
+
+	PVertex new_vertex = (PVertex)malloc(sizeof(Vertex));
+	if (!new_vertex) return FALSE;
 	new_vertex->serialNumber = vertex_num;
 
 	if (SetAdd(s->Vertex_set, new_vertex) == FALSE) //adding the vertex to the Graph
@@ -129,23 +176,28 @@ Bool GraphAddVertex(PGraph s, int vertex_num)
 
 Bool GraphAddEdge(PGraph s, int vertex1, int vertex2, int weight)
 {
-	PEdge new_edge = (PEdge)malloc(sizeof(Edge));
-
 	/*Sanity Check*/
-	if ((s == NULL) || (vertex1 < 0) || (vertex2 < 0) || (weight < 0))   //check if this check is fine mayber need more
+	if ((s == NULL) || (vertex1 <= 0) || (vertex2 <= 0) || (weight < 0) || (weight>10) )   //check if this check is fine mayber need more
 		return FALSE;
-   /* here we check if those vertexes are exist*/
 
-	//if ((SetFindElement(s->Edge_set, vertex1) == NULL)) //means we don't have it 
-	//	return FALSE;
+	PEdge new_edge = (PEdge)malloc(sizeof(Edge));
+	if (!new_edge) return FALSE;
 
-	//if ((SetFindElement(s->Edge_set, vertex2) == NULL)) //means we don't have it 
-	//	return FALSE;
-
-	new_edge->nodeA = vertex1;
-	new_edge->nodeB = vertex2;
+	new_edge->nodeA = find_vertex_by_num(s, vertex1);
+	new_edge->nodeB = find_vertex_by_num(s, vertex2);
+	if ((!new_edge->nodeA) || (!new_edge->nodeB) || (new_edge->nodeA == new_edge->nodeB)) // checks if the nodes exist in the graph
+	{
+		free(new_edge); //some node doesn't exist
+		return FALSE;
+	}
 	new_edge->weight = weight;
-	// to check it  keshet exists
+
+	if (find_edge(s, new_edge)) //if we've found a similar edge
+	{
+		free(new_edge);
+		return FALSE;
+	}
+
 	if (SetAdd(s->Edge_set, new_edge) == FALSE) //adding the vertex to the Graph
 		return FALSE;
 
@@ -156,34 +208,60 @@ PSet GraphNeighborVertices(PGraph, int);
 
 Bool GraphFindShortestPath(PGraph pGraph, int source, int* dist, int* prev);
 
+/*****************************
+*GraphGetNumberOfEdges function
+*The function return the number of exisiting edges in the graph
+*Argument (PGraph s)
+*Output (integer)
+*****************************/
 int GraphGetNumberOfEdges(PGraph s)
 {
-	if (!s) return NULL;
+	if (!s) return 0;
 	return SetGetSize(s->Edge_set);
 }
 
-
+/*****************************
+*GraphGetNumberOfVertices function
+*The function return the number of exisiting Vertices in the graph
+*Argument (PGraph s)
+*Output (integer)
+*****************************/
 int GraphGetNumberOfVertices(PGraph s)
 {
-	if (!s) return NULL;
+	if (!s) return 0;
 	return SetGetSize(s->Vertex_set);
 }
 
-
+/*****************************
+*GraphVerticesStatus function
+*The function returns a pointer to the vertex set
+*Argument (PGraph s)
+*Output (PSet s)
+*****************************/
 PSet GraphVerticesStatus(PGraph s)
 {
 	if (!s) return NULL;
 	return s->Vertex_set;
 }
 
-
+/*****************************
+*GraphEdgesStatus function
+*The function returns a pointer to the edges set
+*Argument (PGraph s)
+*Output (PSet s)
+*****************************/
 PSet GraphEdgesStatus(PGraph s)
 {
 	if (!s) return NULL;
 	return s->Edge_set;
 }
 
-
+/*****************************
+*GraphDestroy function
+*The function destroys the two sets in the the grapsh and the graph itself
+*Argument (PGraph s)
+*No output
+*****************************/
 void GraphDestroy(PGraph s)
 {
 	SetDestroy(s->Edge_set);
@@ -201,36 +279,47 @@ int main()
 	printf("The Graph was created DONE \n\n");
 	
 	printf("Adding Vertex Check &0 \n");
-	Bool res1 = GraphAddVertex(tryingGraph, 0); // waiting for response from forum about adding zero Vertex
+	Bool res1 = GraphAddVertex(tryingGraph, 3); // waiting for response from forum about adding zero Vertex
 		if (res1 == FALSE)
 			printf("Adding Vertex Check &0 FAILED \n\n");
+
+	print_vertex_list(tryingGraph);
 
 	printf("Adding Vertex Check &1 \n");
 	Bool res2 = GraphAddVertex(tryingGraph, 1); // waiting for response from forum about adding zero Vertex
 	if (res2 == FALSE)
 		printf("Adding Vertex Check &1 FAILED \n\n");
 
+	print_vertex_list(tryingGraph);
+
 	printf("Adding Vertex Check &2 \n");
 	Bool res6 = GraphAddVertex(tryingGraph, 2); // waiting for response from forum about adding zero Vertex
 	if (res6 == FALSE)
 		printf("Adding Vertex Check &2 FAILED \n\n");
 	
+	print_vertex_list(tryingGraph);
+
 
 	printf("Adding Edge Check &0 \n");
-	Bool res3 = GraphAddEdge(tryingGraph, 0, 1, 3);
+	Bool res3 = GraphAddEdge(tryingGraph, 1, 2, 3);
 	if (res3 == FALSE)
 		printf("Adding Edge Check &0 FAILED \n\n");
 
+	print_edges_list(tryingGraph);
+
 	printf("Adding Edge Check &1 \n");
-	Bool res4 = GraphAddEdge(tryingGraph, 1, 0, 3);
+	Bool res4 = GraphAddEdge(tryingGraph, 3, 1, 3);
 	if (res4 == FALSE)
 		printf("Adding Edge Check &1 FAILED - cause you are fucking nigha \n\n");
+
+	print_edges_list(tryingGraph);
 
 	printf("Adding Edge Check &2 \n");
 	Bool res5 = GraphAddEdge(tryingGraph, 1, 2, 3);
 	if (res5 == FALSE)
 		printf("Adding Edge Check &2 FAILED \n\n");
 
+	print_edges_list(tryingGraph);
 
 	printf("number of vertex %d \n\n", GraphGetNumberOfVertices(tryingGraph));
 
@@ -238,6 +327,5 @@ int main()
 
 	GraphDestroy(tryingGraph);
 
-	return 0;
-	
+	return 0;	
 }
