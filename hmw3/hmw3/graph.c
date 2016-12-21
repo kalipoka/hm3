@@ -327,5 +327,8 @@ int main()
 
 	GraphDestroy(tryingGraph);
 
+	printf("number of vertex %d \n\n", GraphGetNumberOfVertices(tryingGraph));
+
+	printf("number of Edges %d \n\n", GraphGetNumberOfEdges(tryingGraph));
 	return 0;	
 }
