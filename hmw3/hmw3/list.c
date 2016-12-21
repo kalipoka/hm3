@@ -83,10 +83,13 @@ Result ListAdd(PList s, PElem Elem)
 		PNODE new_node = (PNODE)malloc(sizeof(NODE));
 		if (!new_node) return FAIL;
 
-		new_node->element = Elem;
-		new_node->pNext = s->head;
-		if ((s->head->element = s->cpy_elem(Elem)) == NULL)
+		new_node->element = s->cpy_elem(Elem);
+		if (new_node->element == NULL)
 			return FAIL;
+		new_node->pNext = s->head;
+		//if ((s->head->element = s->cpy_elem(Elem)) == NULL)
+			//return FAIL;
+		//s->head->pNext = s->head;        //trying here
 		s->head = new_node;
 	}
 	s->size++;

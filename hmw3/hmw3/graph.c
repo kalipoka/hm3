@@ -35,7 +35,7 @@ static void print_edges_list(PGraph s)
 	while (elem)
 	{
 		PEdge ver = (PEdge)elem;
-		printf("{%d, %d}\n", ver->nodeA->serialNumber, ver->nodeA->serialNumber, ver->weight);
+		printf("{%d, %d}\n", ver->nodeA->serialNumber, ver->nodeB->serialNumber, ver->weight);
 		elem = SetGetNext(s->Edge_set);
 	}
 }
@@ -177,7 +177,7 @@ Bool GraphAddVertex(PGraph s, int vertex_num)
 Bool GraphAddEdge(PGraph s, int vertex1, int vertex2, int weight)
 {
 	/*Sanity Check*/
-	if ((s == NULL) || (vertex1 <= 0) || (vertex2 <= 0) || (weight < 0) || (weight>10) )   //check if this check is fine mayber need more
+	if ((s == NULL) || (vertex1 < 0) || (vertex2 < 0) || (weight < 0) || (weight>10) )   //check if this check is fine mayber need more
 		return FALSE;
 
 	PEdge new_edge = (PEdge)malloc(sizeof(Edge));
@@ -318,6 +318,11 @@ int main()
 	Bool res5 = GraphAddEdge(tryingGraph, 1, 2, 3);
 	if (res5 == FALSE)
 		printf("Adding Edge Check &2 FAILED \n\n");
+
+	printf("number of vertex %d \n\n", GraphGetNumberOfVertices(tryingGraph));
+
+	printf("number of Edges %d \n\n", GraphGetNumberOfEdges(tryingGraph));
+
 
 	print_edges_list(tryingGraph);
 
