@@ -14,14 +14,13 @@ typedef struct node_t {
 } NODE, *PNODE;
 
 /* Define the list*/
-struct List_; 
-typedef struct List_ {
+struct List_ {
 	PNODE head;				/* head of the linked list not sure of this element is needed here */
 	int size;				/* the number of elements in the list */
 	CLONE_FUNC cpy_elem;	/* Clone element function */
 	DESTROY_FUNC dstr_elem; /* Destroy element function */
 	PNODE iterator;         /* The ITERAOR ***************************should it be here?*/
-} List, *PList;
+} List;
 
 /********************************FUNCTIONS*************************************/
 
@@ -198,17 +197,15 @@ Result ListRemove(PList s)
 *****************************/
 void ListDestroy(PList s)
 {
-	PNODE tmp,next;
-
 	if (s == NULL)
-		return FAIL;
+		return;
 
-	tmp = s->head;
+	PNODE tmp = s->head;
 
 	while (tmp)
 	{
-		s->dstr_elem(tmp->element);
 		s->head = s->head->pNext;
+		s->dstr_elem(tmp->element);
 		free(tmp);
 		tmp = s->head;
 	}	

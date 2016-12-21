@@ -7,14 +7,16 @@
 #include "graph.h"
 
 /************************DEFINITIONS**********************/
-struct _Graph;
-typedef struct _Graph{
+
+struct _Graph{
 	PSet Vertex_set;         //not sure that enough parameters in the struct
 	PSet Edge_set;	           //not sure that enough parameters in the struct, pointer to the 1st
 
 } Graph;
 
 /********************************HELPERS***************************************/
+
+
 
 static void print_vertex_list(PGraph s)
 {
@@ -35,7 +37,7 @@ static void print_edges_list(PGraph s)
 	while (elem)
 	{
 		PEdge ver = (PEdge)elem;
-		printf("{%d, %d}\n", ver->nodeA->serialNumber, ver->nodeB->serialNumber, ver->weight);
+		printf("{%d, %d}\n", ver->nodeA->serialNumber, ver->nodeB->serialNumber);
 		elem = SetGetNext(s->Edge_set);
 	}
 }
@@ -83,6 +85,8 @@ static Bool cmp_edg(PElem pElem1, PElem pElem2) {
 	PEdge pEdge2 = (PEdge)pElem2;
 
 	if (((pEdge1->nodeA == pEdge2->nodeA) && (pEdge1->nodeB == pEdge2->nodeB)) || ((pEdge1->nodeA == pEdge2->nodeB) && (pEdge1->nodeB == pEdge2->nodeA)))
+	return TRUE;
+
 	return FALSE;
 }
 
@@ -121,6 +125,34 @@ static PElem clone_ver(PElem pElem)
 
 	pVertex_new->serialNumber = pVertex_src->serialNumber;
 	return pVertex_new;
+}
+
+
+destroyAllEdges(PGraph s)
+{
+	PElem elem = SetGetFirst(s->Edge_set);
+	printf("\nedges in list:\n");
+	while (elem)
+	{
+		PElem edg = elem;
+		elem = SetGetNext(s->Edge_set);
+		destroy_edg(edg);
+	}
+	SetDestroy(s->Edge_set);
+}
+
+
+destroyAllVerteces(PGraph s)
+{
+	PElem elem = SetGetFirst(s->Vertex_set);
+	printf("\nedges in list:\n");
+	while (elem)
+	{
+		PElem ver = elem;
+		elem = SetGetNext(s->Edge_set);
+		destroy_ver(ver);
+	}
+	SetDestroy(s->Vertex_set);
 }
 
 /********************************FUNCTIONS*************************************/
@@ -168,8 +200,11 @@ Bool GraphAddVertex(PGraph s, int vertex_num)
 	if (!new_vertex) return FALSE;
 	new_vertex->serialNumber = vertex_num;
 
-	if (SetAdd(s->Vertex_set, new_vertex) == FALSE) //adding the vertex to the Graph
+	if (SetAdd(s->Vertex_set, new_vertex) == FALSE)//adding the vertex to the Graph
+	{
+		free(new_vertex);
 		return FALSE;
+	}
 
 	return TRUE;
 }
@@ -198,9 +233,11 @@ Bool GraphAddEdge(PGraph s, int vertex1, int vertex2, int weight)
 		return FALSE;
 	}
 
-	if (SetAdd(s->Edge_set, new_edge) == FALSE) //adding the vertex to the Graph
+	if (SetAdd(s->Edge_set, new_edge) == FALSE)//adding the vertex to the Graph
+	{
+		free(new_edge);
 		return FALSE;
-
+	}
 	return TRUE;
 }
 
@@ -264,77 +301,52 @@ PSet GraphEdgesStatus(PGraph s)
 *****************************/
 void GraphDestroy(PGraph s)
 {
-	SetDestroy(s->Edge_set);
+	//destroyAllVerteces(s);
+	//destroyAllEdges(s);
 	SetDestroy(s->Vertex_set);
+	SetDestroy(s->Edge_set);
+	
 	free(s);
 }
 
 
 /*********************************** Deeebugy & Testen ****************************************/
+
 int main()
 {
 	PGraph tryingGraph;
-	printf("Hola negritos Creating Graph\n");
 	tryingGraph = GraphCreate();
-	printf("The Graph was created DONE \n\n");
 	
-	printf("Adding Vertex Check &0 \n");
-	Bool res1 = GraphAddVertex(tryingGraph, 0); // waiting for response from forum about adding zero Vertex
-		if (res1 == FALSE)
-			printf("Adding Vertex Check &0 FAILED \n\n");
-
-	print_vertex_list(tryingGraph);
-
-	printf("Adding Vertex Check &1 \n");
-	Bool res2 = GraphAddVertex(tryingGraph, 1); // waiting for response from forum about adding zero Vertex
-	if (res2 == FALSE)
+	if (GraphAddVertex(tryingGraph, 0) == FALSE)
+		printf("Adding Vertex Check &0 FAILED \n\n");
+	/*
+	if (GraphAddVertex(tryingGraph, 1) == FALSE)
 		printf("Adding Vertex Check &1 FAILED \n\n");
 
-	print_vertex_list(tryingGraph);
-
-	printf("Adding Vertex Check &2 \n");
-	Bool res6 = GraphAddVertex(tryingGraph, 2); // waiting for response from forum about adding zero Vertex
-	if (res6 == FALSE)
+	if (GraphAddVertex(tryingGraph, 2) == FALSE)
 		printf("Adding Vertex Check &2 FAILED \n\n");
-	
+	*/
 	print_vertex_list(tryingGraph);
 
 
-	printf("Adding Edge Check &0 \n");
-	Bool res3 = GraphAddEdge(tryingGraph, 0, 1, 3);
-	if (res3 == FALSE)
+	if (GraphAddEdge(tryingGraph, 0, 1, 3) == FALSE)
 		printf("Adding Edge Check &0 FAILED \n\n");
-
-	print_edges_list(tryingGraph);
-
-	printf("Adding Edge Check &1 \n");
-	Bool res4 = GraphAddEdge(tryingGraph, 0, 2, 3);
-	if (res4 == FALSE)
+	/*
+	if (GraphAddEdge(tryingGraph, 0, 2, 3) == FALSE)
 		printf("Adding Edge Check &1 FAILED - cause you are fucking nigha \n\n");
 
-	print_edges_list(tryingGraph);
-	/*
-	printf("Adding Edge Check &2 \n");
-	Bool res5 = GraphAddEdge(tryingGraph, 1, 2, 3);
-	if (res5 == FALSE)
+	if (GraphAddEdge(tryingGraph, 1, 2, 3) == FALSE)
 		printf("Adding Edge Check &2 FAILED \n\n");
-    */
+	*/
+	print_edges_list(tryingGraph);
+    
 	printf("number of vertex %d \n\n", GraphGetNumberOfVertices(tryingGraph));
 
 	printf("number of Edges %d \n\n", GraphGetNumberOfEdges(tryingGraph));
 
-
-	print_edges_list(tryingGraph);
 
 	GraphDestroy(tryingGraph);
 
-	printf("number of vertex %d \n\n", GraphGetNumberOfVertices(tryingGraph));
 
-	printf("number of Edges %d \n\n", GraphGetNumberOfEdges(tryingGraph));
-
-
-	printf("number of vertex %d \n\n", GraphGetNumberOfVertices(tryingGraph));
-
-	printf("number of Edges %d \n\n", GraphGetNumberOfEdges(tryingGraph));
 	return 0;	
 }
