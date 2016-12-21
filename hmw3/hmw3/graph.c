@@ -184,7 +184,12 @@ PSet GraphEdgesStatus(PGraph s)
 }
 
 
-void GraphDestroy(PGraph);
+void GraphDestroy(PGraph s)
+{
+	SetDestroy(s->Edge_set);
+	SetDestroy(s->Vertex_set);
+	free(s);
+}
 
 
 /*********************************** Deeebugy & Testen ****************************************/
@@ -230,6 +235,8 @@ int main()
 	printf("number of vertex %d \n\n", GraphGetNumberOfVertices(tryingGraph));
 
 	printf("number of Edges %d \n\n", GraphGetNumberOfEdges(tryingGraph));
+
+	GraphDestroy(tryingGraph);
 
 	return 0;
 	

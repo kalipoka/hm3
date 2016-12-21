@@ -26,7 +26,7 @@ typedef struct _Vertex* PVertex;
 typedef struct _Edge* PEdge;
 
 PGraph GraphCreate(); /*DONE*/
-void GraphDestroy(PGraph); /*Ofir*/
+void GraphDestroy(PGraph); /*Ofir - DONE need to check if leaks*/
 Bool GraphAddVertex(PGraph, int); /*DONE*/
 Bool GraphAddEdge(PGraph pGraph, int vertex1, int vertex2, int weight); /*Alex - DONE*/
 PSet GraphNeighborVertices(PGraph, int); /*Alex*/
