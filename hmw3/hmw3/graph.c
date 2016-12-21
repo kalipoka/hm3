@@ -35,7 +35,7 @@ static void print_edges_list(PGraph s)
 	while (elem)
 	{
 		PEdge ver = (PEdge)elem;
-		printf("{%d, %d}\n", ver->nodeA->serialNumber, ver->nodeA->serialNumber, ver->weight);
+		printf("{%d, %d}\n", ver->nodeA->serialNumber, ver->nodeB->serialNumber, ver->weight);
 		elem = SetGetNext(s->Edge_set);
 	}
 }
@@ -177,7 +177,7 @@ Bool GraphAddVertex(PGraph s, int vertex_num)
 Bool GraphAddEdge(PGraph s, int vertex1, int vertex2, int weight)
 {
 	/*Sanity Check*/
-	if ((s == NULL) || (vertex1 <= 0) || (vertex2 <= 0) || (weight < 0) || (weight>10) )   //check if this check is fine mayber need more
+	if ((s == NULL) || (vertex1 < 0) || (vertex2 < 0) || (weight < 0) || (weight>10) )   //check if this check is fine mayber need more
 		return FALSE;
 
 	PEdge new_edge = (PEdge)malloc(sizeof(Edge));
@@ -279,7 +279,7 @@ int main()
 	printf("The Graph was created DONE \n\n");
 	
 	printf("Adding Vertex Check &0 \n");
-	Bool res1 = GraphAddVertex(tryingGraph, 3); // waiting for response from forum about adding zero Vertex
+	Bool res1 = GraphAddVertex(tryingGraph, 0); // waiting for response from forum about adding zero Vertex
 		if (res1 == FALSE)
 			printf("Adding Vertex Check &0 FAILED \n\n");
 
@@ -301,31 +301,37 @@ int main()
 
 
 	printf("Adding Edge Check &0 \n");
-	Bool res3 = GraphAddEdge(tryingGraph, 1, 2, 3);
+	Bool res3 = GraphAddEdge(tryingGraph, 0, 1, 3);
 	if (res3 == FALSE)
 		printf("Adding Edge Check &0 FAILED \n\n");
 
 	print_edges_list(tryingGraph);
 
 	printf("Adding Edge Check &1 \n");
-	Bool res4 = GraphAddEdge(tryingGraph, 3, 1, 3);
+	Bool res4 = GraphAddEdge(tryingGraph, 0, 2, 3);
 	if (res4 == FALSE)
 		printf("Adding Edge Check &1 FAILED - cause you are fucking nigha \n\n");
 
 	print_edges_list(tryingGraph);
-
+	/*
 	printf("Adding Edge Check &2 \n");
 	Bool res5 = GraphAddEdge(tryingGraph, 1, 2, 3);
 	if (res5 == FALSE)
 		printf("Adding Edge Check &2 FAILED \n\n");
+    */
+	printf("number of vertex %d \n\n", GraphGetNumberOfVertices(tryingGraph));
+
+	printf("number of Edges %d \n\n", GraphGetNumberOfEdges(tryingGraph));
+
 
 	print_edges_list(tryingGraph);
+
+	GraphDestroy(tryingGraph);
 
 	printf("number of vertex %d \n\n", GraphGetNumberOfVertices(tryingGraph));
 
 	printf("number of Edges %d \n\n", GraphGetNumberOfEdges(tryingGraph));
 
-	GraphDestroy(tryingGraph);
 
 	printf("number of vertex %d \n\n", GraphGetNumberOfVertices(tryingGraph));
 
