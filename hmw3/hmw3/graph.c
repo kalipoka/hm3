@@ -193,8 +193,15 @@ Bool GraphAddVertex(PGraph s, int vertex_num)
 	if ((s == NULL) || (vertex_num < 0))   //check if this check is fine mayber need more
 		return FALSE;
 	
+	/*check if the number of the vertex is legit*/
+	int number_of_vertixes = GraphGetNumberOfVertices(s);
+
+	if (number_of_vertixes != vertex_num)
+		return FALSE;
+
 	if (find_vertex_by_num(s, vertex_num)) //if we've found a similar vertex
 		return FALSE;
+
 
 	PVertex new_vertex = (PVertex)malloc(sizeof(Vertex));
 	if (!new_vertex) return FALSE;
@@ -214,6 +221,7 @@ Bool GraphAddEdge(PGraph s, int vertex1, int vertex2, int weight)
 	/*Sanity Check*/
 	if ((s == NULL) || (vertex1 < 0) || (vertex2 < 0) || (weight < 0) || (weight>10) )   //check if this check is fine mayber need more
 		return FALSE;
+
 
 	PEdge new_edge = (PEdge)malloc(sizeof(Edge));
 	if (!new_edge) return FALSE;
@@ -317,15 +325,17 @@ int main()
 	PGraph tryingGraph;
 	tryingGraph = GraphCreate();
 	
-	if (GraphAddVertex(tryingGraph, 0) == FALSE)
+	if (GraphAddVertex(tryingGraph, 5) == FALSE)
 		printf("Adding Vertex Check &0 FAILED \n\n");
-	/*
-	if (GraphAddVertex(tryingGraph, 1) == FALSE)
+	
+	if (GraphAddVertex(tryingGraph, 0) == FALSE)
 		printf("Adding Vertex Check &1 FAILED \n\n");
 
 	if (GraphAddVertex(tryingGraph, 2) == FALSE)
 		printf("Adding Vertex Check &2 FAILED \n\n");
-	*/
+	
+	if (GraphAddVertex(tryingGraph, 1) == FALSE)
+		printf("Adding Vertex Check &1 FAILED \n\n");
 	print_vertex_list(tryingGraph);
 
 
@@ -334,10 +344,14 @@ int main()
 	/*
 	if (GraphAddEdge(tryingGraph, 0, 2, 3) == FALSE)
 		printf("Adding Edge Check &1 FAILED - cause you are fucking nigha \n\n");
+		*/
 
-	if (GraphAddEdge(tryingGraph, 1, 2, 3) == FALSE)
+	if (GraphAddEdge(tryingGraph, 0, 1, 3) == FALSE)
 		printf("Adding Edge Check &2 FAILED \n\n");
-	*/
+
+	if (GraphAddEdge(tryingGraph, 1, 0, 3) == FALSE)
+		printf("Adding Edge Check &2 FAILED \n\n");
+	
 	print_edges_list(tryingGraph);
     
 	printf("number of vertex %d \n\n", GraphGetNumberOfVertices(tryingGraph));
