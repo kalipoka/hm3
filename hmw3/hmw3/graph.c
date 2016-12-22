@@ -42,7 +42,6 @@ static void print_edges_list(PGraph s)
 	}
 }
 
-
 static PElem find_vertex(PGraph s, PElem pElem)
 {
 	return SetFindElement(s->Vertex_set, pElem);
@@ -66,8 +65,6 @@ static PElem find_edge(PGraph s, PElem pElem)
 {
 	return SetFindElement(s->Edge_set, pElem);
 }
-
-
 
 static void destroy_ver(PElem pElem)
 {
@@ -159,20 +156,12 @@ destroyAllEdges(PGraph s)
 		PEdge edg = (PEdge)tmp;
 		destroy_ver(edg->nodeA);
 		destroy_ver(edg->nodeB);
-		destroy_edg(tmp);
 	}
 	SetDestroy(s->Edge_set);
 }
 
 destroyAllVerteces(PGraph s)
 {
-	PElem elem = SetGetFirst(s->Vertex_set);
-	while (elem)
-	{
-		PElem ver = elem;
-		elem = SetGetNext(s->Edge_set);
-		destroy_ver(ver);
-	}
 	SetDestroy(s->Vertex_set);
 }
 
@@ -253,7 +242,7 @@ Bool GraphAddEdge(PGraph s, int vertex1, int vertex2, int weight)
 		return FALSE;
 	}
 	// cloning the verteces for the new edge
-	PElem elem;
+	PElem elem = NULL;
 	new_edge->nodeA = clone_ver(new_edge->nodeA);
 	new_edge->nodeB = clone_ver(new_edge->nodeB);
 	new_edge->weight = weight;
@@ -328,11 +317,10 @@ PSet GraphEdgesStatus(PGraph s)
 *****************************/
 void GraphDestroy(PGraph s)
 {
-	//destroyAllVerteces(s);
-	//destroyAllEdges(s);
-	SetDestroy(s->Vertex_set);
-	SetDestroy(s->Edge_set);
-	
+	destroyAllVerteces(s);
+	destroyAllEdges(s);
+	//SetDestroy(s->Vertex_set);
+	//SetDestroy(s->Edge_set);
 	free(s);
 }
 
