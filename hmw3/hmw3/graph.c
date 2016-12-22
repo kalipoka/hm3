@@ -219,6 +219,13 @@ Bool GraphAddVertex(PGraph s, int vertex_num)
 	return TRUE;
 }
 
+/*****************************
+*GraphAddEdge function
+*The function add an Edge to the graph
+*Argument (PGrapf s, int vertex1, int vertex2, int weight)
+*Output (TRUE/FALSE)
+*****************************/
+
 Bool GraphAddEdge(PGraph s, int vertex1, int vertex2, int weight)
 {
 	/*Sanity Check*/
@@ -257,11 +264,17 @@ Bool GraphAddEdge(PGraph s, int vertex1, int vertex2, int weight)
 	return TRUE;
 }
 
+/*****************************
+*GraphNeighborVertices function
+*The creates a set of th neighbours
+*Argument (PGrapf s, int vertex_num)
+*Output Pset or NULL
+*****************************/
 PSet GraphNeighborVertices(PGraph s, int vertex_num)
 {
 	if ((s == NULL) || (vertex_num < 0)) return NULL;
 
-	PVertex the_vertex = (PVertex)find_vertex_by_num(s, vertex_num);
+	PVertex the_vertex = (PVertex)find_vertex_by_num(s, vertex_num);   // here we check if we have this verete at all
 
 	if (the_vertex == NULL) return NULL;    //means no such vertex here
 
@@ -276,25 +289,26 @@ PSet GraphNeighborVertices(PGraph s, int vertex_num)
 		PEdge edg = (PEdge)elem;
 		if ((edg->nodeA->serialNumber == vertex_num) || (edg->nodeB->serialNumber == vertex_num)) // means there is a neighbour
 		{
-			// from here
+
 			PVertex new_vertex = (PVertex)malloc(sizeof(Vertex));                                // #$%#%#$%#%#$ MALLOC
 			if (!new_vertex) return FALSE;
-			if (edg->nodeA->serialNumber == vertex_num)
-				new_vertex->serialNumber = vertex_num;
 
+			if (edg->nodeA->serialNumber != vertex_num)                                //here we check which one of the Kzavot we need to save
+				new_vertex->serialNumber = edg->nodeA->serialNumber;
+			else                                                                      // Node B
+				new_vertex->serialNumber = edg->nodeB->serialNumber;
+			
 			if (SetAdd(neigbours, new_vertex) == FALSE)//adding the vertex to the Graph
-			{
-				free(new_vertex);
-				return FALSE;
-			}
-			//till here
+				{
+					free(new_vertex);
+					return FALSE;
+				}
 		}
 		elem = SetGetNext(s->Edge_set);
 	}
 	return neigbours;
 
 }
-
 Bool GraphFindShortestPath(PGraph pGraph, int source, int* dist, int* prev);
 
 /*****************************
@@ -376,6 +390,10 @@ int main()
 
 	if (GraphAddVertex(tryingGraph, 2) == FALSE)
 		printf("Adding Vertex Check &2 FAILED \n\n");
+
+	if (GraphAddVertex(tryingGraph, 3) == FALSE)
+		printf("Adding Vertex Check &2 FAILED \n\n");
+
 	
 	print_vertex_list(tryingGraph);
 
@@ -390,10 +408,10 @@ int main()
 		printf("Adding Edge Check &2 FAILED \n\n");
 
 	if (GraphAddEdge(tryingGraph, 1, 2, 3) == FALSE)
-		printf("Adding Edge Check &2 FAILED \n\n");
+		printf("Adding Edge Check &3 FAILED \n\n");
 
 	if (GraphAddEdge(tryingGraph, 2, 1, 3) == FALSE)
-		printf("Adding Edge Check &2 FAILED \n\n");
+		printf("Adding Edge Check &4 FAILED \n\n");
 
 
 	print_edges_list(tryingGraph);
@@ -402,9 +420,18 @@ int main()
 
 	printf("number of Edges %d \n\n", GraphGetNumberOfEdges(tryingGraph));
 
+	PSet neighbours_set = GraphNeighborVertices( tryingGraph, 2);
+
+	PElem elem = SetGetFirst(neighbours_set);
+	printf("\Neighbours in list:\n");
+	while (elem)
+	{
+		PVertex ver = (PVertex)elem;
+		printf("%d\n", ver->serialNumber);
+		elem = SetGetNext(neighbours_set);
+	}
+
 
 	GraphDestroy(tryingGraph);
-
-
 	return 0;	
 }
