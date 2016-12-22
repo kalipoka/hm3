@@ -205,7 +205,7 @@ Bool GraphAddVertex(PGraph s, int vertex_num)
 		free(new_vertex);
 		return FALSE;
 	}
-
+	free(new_vertex);
 	return TRUE;
 }
 
@@ -238,6 +238,7 @@ Bool GraphAddEdge(PGraph s, int vertex1, int vertex2, int weight)
 		free(new_edge);
 		return FALSE;
 	}
+	free(new_edge);
 	return TRUE;
 }
 
