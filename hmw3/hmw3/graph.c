@@ -42,7 +42,6 @@ static void print_edges_list(PGraph s)
 	}
 }
 
-
 static PElem find_vertex(PGraph s, PElem pElem)
 {
 	return SetFindElement(s->Vertex_set, pElem);
@@ -84,7 +83,13 @@ static Bool cmp_edg(PElem pElem1, PElem pElem2) {
 	PEdge pEdge1 = (PEdge)pElem1;
 	PEdge pEdge2 = (PEdge)pElem2;
 
-	if (((pEdge1->nodeA == pEdge2->nodeA) && (pEdge1->nodeB == pEdge2->nodeB)) || ((pEdge1->nodeA == pEdge2->nodeB) && (pEdge1->nodeB == pEdge2->nodeA)))
+	PVertex ed1nodA = (PVertex)pEdge1->nodeA;
+	PVertex ed1nodB = (PVertex)pEdge1->nodeB;
+	PVertex ed2nodA = (PVertex)pEdge2->nodeA;
+	PVertex ed2nodB = (PVertex)pEdge2->nodeB;
+
+
+	if (((ed1nodA->serialNumber == ed2nodA->serialNumber) && (ed1nodB->serialNumber == ed2nodB->serialNumber)) || ((ed1nodA->serialNumber == ed2nodB->serialNumber) && (ed1nodB->serialNumber == ed2nodA->serialNumber)))
 	return TRUE;
 
 	return FALSE;
@@ -127,31 +132,36 @@ static PElem clone_ver(PElem pElem)
 	return pVertex_new;
 }
 
+static PElem find_similar_edge(PGraph s, PElem pElem)
+{
+	PElem elem_index = SetGetFirst(s->Edge_set);
+
+	while (elem_index)
+	{
+		Bool bool = cmp_edg(pElem, elem_index);
+		if (bool == TRUE)
+			return elem_index;
+		elem_index = SetGetNext(s->Edge_set);
+	}
+	return NULL;
+}
 
 destroyAllEdges(PGraph s)
 {
 	PElem elem = SetGetFirst(s->Edge_set);
-	printf("\nedges in list:\n");
 	while (elem)
 	{
-		PElem edg = elem;
+		PElem tmp = elem;
 		elem = SetGetNext(s->Edge_set);
-		destroy_edg(edg);
+		PEdge edg = (PEdge)tmp;
+		destroy_ver(edg->nodeA);
+		destroy_ver(edg->nodeB);
 	}
 	SetDestroy(s->Edge_set);
 }
 
-
 destroyAllVerteces(PGraph s)
 {
-	PElem elem = SetGetFirst(s->Vertex_set);
-	printf("\nedges in list:\n");
-	while (elem)
-	{
-		PElem ver = elem;
-		elem = SetGetNext(s->Edge_set);
-		destroy_ver(ver);
-	}
 	SetDestroy(s->Vertex_set);
 }
 
@@ -193,15 +203,8 @@ Bool GraphAddVertex(PGraph s, int vertex_num)
 	if ((s == NULL) || (vertex_num < 0))   //check if this check is fine mayber need more
 		return FALSE;
 	
-	/*check if the number of the vertex is legit*/
-	int number_of_vertixes = GraphGetNumberOfVertices(s);
-
-	if (number_of_vertixes != vertex_num)
-		return FALSE;
-
 	if (find_vertex_by_num(s, vertex_num)) //if we've found a similar vertex
 		return FALSE;
-
 
 	PVertex new_vertex = (PVertex)malloc(sizeof(Vertex));
 	if (!new_vertex) return FALSE;
@@ -212,7 +215,7 @@ Bool GraphAddVertex(PGraph s, int vertex_num)
 		free(new_vertex);
 		return FALSE;
 	}
-
+	free(new_vertex);
 	return TRUE;
 }
 
@@ -221,7 +224,6 @@ Bool GraphAddEdge(PGraph s, int vertex1, int vertex2, int weight)
 	/*Sanity Check*/
 	if ((s == NULL) || (vertex1 < 0) || (vertex2 < 0) || (weight < 0) || (weight>10) )   //check if this check is fine mayber need more
 		return FALSE;
-
 
 	PEdge new_edge = (PEdge)malloc(sizeof(Edge));
 	if (!new_edge) return FALSE;
@@ -233,19 +235,25 @@ Bool GraphAddEdge(PGraph s, int vertex1, int vertex2, int weight)
 		free(new_edge); //some node doesn't exist
 		return FALSE;
 	}
-	new_edge->weight = weight;
 
-	if (find_edge(s, new_edge)) //if we've found a similar edge
+	if (find_similar_edge(s, new_edge)) //if we've found a similar edge
 	{
 		free(new_edge);
 		return FALSE;
 	}
+	// cloning the verteces for the new edge
+	PElem elem = NULL;
+	new_edge->nodeA = clone_ver(new_edge->nodeA);
+	new_edge->nodeB = clone_ver(new_edge->nodeB);
+	new_edge->weight = weight;
 
 	if (SetAdd(s->Edge_set, new_edge) == FALSE)//adding the vertex to the Graph
 	{
 		free(new_edge);
 		return FALSE;
 	}
+
+	free(new_edge);
 	return TRUE;
 }
 
@@ -345,11 +353,10 @@ PSet GraphEdgesStatus(PGraph s)
 *****************************/
 void GraphDestroy(PGraph s)
 {
-	//destroyAllVerteces(s);
-	//destroyAllEdges(s);
-	SetDestroy(s->Vertex_set);
-	SetDestroy(s->Edge_set);
-	
+	destroyAllVerteces(s);
+	destroyAllEdges(s);
+	//SetDestroy(s->Vertex_set);
+	//SetDestroy(s->Edge_set);
 	free(s);
 }
 
@@ -361,33 +368,34 @@ int main()
 	PGraph tryingGraph;
 	tryingGraph = GraphCreate();
 	
-	if (GraphAddVertex(tryingGraph, 5) == FALSE)
+	if (GraphAddVertex(tryingGraph, 0) == FALSE)
 		printf("Adding Vertex Check &0 FAILED \n\n");
 	
-	if (GraphAddVertex(tryingGraph, 0) == FALSE)
+	if (GraphAddVertex(tryingGraph, 1) == FALSE)
 		printf("Adding Vertex Check &1 FAILED \n\n");
 
 	if (GraphAddVertex(tryingGraph, 2) == FALSE)
 		printf("Adding Vertex Check &2 FAILED \n\n");
 	
-	if (GraphAddVertex(tryingGraph, 1) == FALSE)
-		printf("Adding Vertex Check &1 FAILED \n\n");
 	print_vertex_list(tryingGraph);
 
 
 	if (GraphAddEdge(tryingGraph, 0, 1, 3) == FALSE)
 		printf("Adding Edge Check &0 FAILED \n\n");
-	/*
+	
 	if (GraphAddEdge(tryingGraph, 0, 2, 3) == FALSE)
 		printf("Adding Edge Check &1 FAILED - cause you are fucking nigha \n\n");
-		*/
 
-	if (GraphAddEdge(tryingGraph, 0, 1, 3) == FALSE)
+	if (GraphAddEdge(tryingGraph, 1, 2, 3) == FALSE)
 		printf("Adding Edge Check &2 FAILED \n\n");
 
-	if (GraphAddEdge(tryingGraph, 1, 0, 3) == FALSE)
+	if (GraphAddEdge(tryingGraph, 1, 2, 3) == FALSE)
 		printf("Adding Edge Check &2 FAILED \n\n");
-	
+
+	if (GraphAddEdge(tryingGraph, 2, 1, 3) == FALSE)
+		printf("Adding Edge Check &2 FAILED \n\n");
+
+
 	print_edges_list(tryingGraph);
     
 	printf("number of vertex %d \n\n", GraphGetNumberOfVertices(tryingGraph));
