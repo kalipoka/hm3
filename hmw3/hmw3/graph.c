@@ -291,7 +291,7 @@ PSet GraphNeighborVertices(PGraph s, int vertex_num)
 		{
 
 			PVertex new_vertex = (PVertex)malloc(sizeof(Vertex));                                // #$%#%#$%#%#$ MALLOC
-			if (!new_vertex) return FALSE;
+			if (!new_vertex) return NULL;
 
 			if (edg->nodeA->serialNumber != vertex_num)                                //here we check which one of the Kzavot we need to save
 				new_vertex->serialNumber = edg->nodeA->serialNumber;
@@ -301,8 +301,9 @@ PSet GraphNeighborVertices(PGraph s, int vertex_num)
 			if (SetAdd(neigbours, new_vertex) == FALSE)//adding the vertex to the Graph
 				{
 					free(new_vertex);
-					return FALSE;
+					return NULL;
 				}
+			free(new_vertex);
 		}
 		elem = SetGetNext(s->Edge_set);
 	}
@@ -419,19 +420,20 @@ int main()
 	printf("number of vertex %d \n\n", GraphGetNumberOfVertices(tryingGraph));
 
 	printf("number of Edges %d \n\n", GraphGetNumberOfEdges(tryingGraph));
-
+	
 	PSet neighbours_set = GraphNeighborVertices( tryingGraph, 2);
-
+	
 	PElem elem = SetGetFirst(neighbours_set);
-	printf("\Neighbours in list:\n");
+	printf("Neighbours in list:\n");
 	while (elem)
 	{
 		PVertex ver = (PVertex)elem;
 		printf("%d\n", ver->serialNumber);
 		elem = SetGetNext(neighbours_set);
 	}
-
-
+	
 	GraphDestroy(tryingGraph);
+	SetDestroy(neighbours_set);
+	
 	return 0;	
 }
