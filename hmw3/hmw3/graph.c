@@ -258,7 +258,7 @@ Bool GraphAddEdge(PGraph s, int vertex1, int vertex2, int weight)
 }
 
 PSet GraphNeighborVertices(PGraph, int);
-
+/*
 Bool GraphFindShortestPath(PGraph pGraph, int source, int* dist, int* prev)
 {
 	create vertex set Q
@@ -285,7 +285,7 @@ Bool GraphFindShortestPath(PGraph pGraph, int source, int* dist, int* prev)
 	}
 	return dist[
 }
-
+*/
 /*****************************
 *GraphGetNumberOfEdges function
 *The function return the number of exisiting edges in the graph
