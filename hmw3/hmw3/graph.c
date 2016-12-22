@@ -61,6 +61,22 @@ static PElem find_vertex_by_num(PGraph s, int serial)
 	return NULL;
 }
 
+static PElem find_edge_by_nodes(PGraph s, int nodeA, int nodeB)
+{
+	PElem elem = SetGetFirst(s->Edge_set);
+
+	while (elem)
+	{
+		PEdge pEdge = (PEdge)elem;
+		PVertex ed1nodA = (PVertex)pEdge->nodeA;
+		PVertex ed1nodB = (PVertex)pEdge->nodeB;
+		if (((ed1nodA->serialNumber == nodeA) && (ed1nodB->serialNumber == nodeB)) || ((ed1nodA->serialNumber == nodeB) && (ed1nodB->serialNumber == nodeA)))
+			return elem;
+		elem = SetGetNext(s->Edge_set);
+	}
+	return NULL;
+}
+
 static PElem find_edge(PGraph s, PElem pElem)
 {
 	return SetFindElement(s->Edge_set, pElem);
@@ -144,6 +160,24 @@ static PElem find_similar_edge(PGraph s, PElem pElem)
 		elem_index = SetGetNext(s->Edge_set);
 	}
 	return NULL;
+}
+
+static Bool Clone_graph(PGraph o, PGraph t)
+{
+	PElem elem = SetGetFirst(o->Vertex_set);
+	while (elem)
+	{
+		if (SetAdd(t->Vertex_set, elem))  return FALSE;
+		elem = SetGetNext(o->Vertex_set);
+	} //we want the source to be the first element in our Q
+
+	elem = SetGetFirst(o->Edge_set);
+	while (elem)
+	{
+		if (SetAdd(t->Vertex_set, elem) ==FALSE) return FALSE;
+		elem = SetGetNext(o->Edge_set);
+	}
+	return TRUE;
 }
 
 destroyAllEdges(PGraph s)
@@ -310,7 +344,65 @@ PSet GraphNeighborVertices(PGraph s, int vertex_num)
 	return neigbours;
 
 }
-Bool GraphFindShortestPath(PGraph pGraph, int source, int* dist, int* prev);
+
+
+Bool GraphFindShortestPath(PGraph pGraph, int source, int* dist, int* prev)
+{
+	// create vertex set Q - we already have dont we
+	PGraph tmp_graph = GraphCreate();
+	PElem source_elem = find_vertex_by_num(pGraph, source);
+
+	// cloning original graph to tmp
+	if (Clone_graph(pGraph, tmp_graph) == FALSE) return FALSE;
+
+	for (int i = 0, v = GraphGetNumberOfVertices(tmp_graph); i <= v; i++) { // Initialization
+		dist[i] = v; // Unknown distance from source to v
+		prev[i] = -1; // Previous node in optimal path from source
+		printf("dist :%d\n", v);
+		printf("dist :%d\n", dist[i]);
+		printf("dist :%d\n", prev[i]);			  //add v to Q; // All nodes initially in Q (unvisited nodes)
+	}
+	return TRUE;
+	dist[source] = 0; // Distance from source to source
+	prev[source] = source;
+
+	PElem elem = SetGetFirst(tmp_graph->Vertex_set);
+	while (elem) {
+		//find minimum in temp_graph
+		PElem min_vertex_elem = elem;
+		PElem min_next_elem = SetGetNext(tmp_graph->Vertex_set);
+		while (min_vertex_elem && min_next_elem)
+		{
+			PVertex ver1 = (PVertex)min_next_elem;
+			PVertex ver2 = (PVertex)min_next_elem;
+			if (dist[ver1->serialNumber] > dist[ver2->serialNumber])
+				min_vertex_elem = min_next_elem;
+			min_next_elem = SetGetNext(tmp_graph->Vertex_set);
+		}
+
+		PVertex ver_min = (PVertex)min_vertex_elem; //this vertex has the minimum distance
+		
+		// check neibours
+		PSet neibour_set = GraphNeighborVertices(pGraph, ver_min->serialNumber);
+		PElem neibour = SetGetFirst(neibour_set);
+		int alt = -1;
+		while (neibour)
+		{
+			PVertex neibour_vex = (PVertex)neibour;
+			PEdge common_edge = find_edge_by_nodes(tmp_graph, ver_min->serialNumber, neibour_vex->serialNumber);
+			alt = dist[ver_min->serialNumber] + common_edge->weight;
+			if (alt < dist[neibour_vex->serialNumber])
+			{
+				dist[neibour_vex->serialNumber] = alt;
+				prev[neibour_vex->serialNumber] = ver_min->serialNumber;
+			}
+		}
+		SetDestroy(neibour_set);
+		PElem elem = SetGetFirst(tmp_graph->Vertex_set);
+	}
+	GraphDestroy(tmp_graph);
+	return TRUE;
+}
 
 /*****************************
 *GraphGetNumberOfEdges function
@@ -395,6 +487,15 @@ int main()
 	if (GraphAddVertex(tryingGraph, 3) == FALSE)
 		printf("Adding Vertex Check &2 FAILED \n\n");
 
+	if (GraphAddVertex(tryingGraph, 4) == FALSE)
+		printf("Adding Vertex Check &2 FAILED \n\n");
+
+	if (GraphAddVertex(tryingGraph, 5) == FALSE)
+		printf("Adding Vertex Check &2 FAILED \n\n");
+
+	if (GraphAddVertex(tryingGraph, 6) == FALSE)
+		printf("Adding Vertex Check &2 FAILED \n\n");
+
 	
 	print_vertex_list(tryingGraph);
 
@@ -402,16 +503,16 @@ int main()
 	if (GraphAddEdge(tryingGraph, 0, 1, 3) == FALSE)
 		printf("Adding Edge Check &0 FAILED \n\n");
 	
-	if (GraphAddEdge(tryingGraph, 0, 2, 3) == FALSE)
+	if (GraphAddEdge(tryingGraph, 1, 2, 3) == FALSE)
 		printf("Adding Edge Check &1 FAILED - cause you are fucking nigha \n\n");
 
-	if (GraphAddEdge(tryingGraph, 1, 2, 3) == FALSE)
+	if (GraphAddEdge(tryingGraph, 0, 3, 3) == FALSE)
 		printf("Adding Edge Check &2 FAILED \n\n");
 
-	if (GraphAddEdge(tryingGraph, 1, 2, 3) == FALSE)
+	if (GraphAddEdge(tryingGraph, 3, 4, 3) == FALSE)
 		printf("Adding Edge Check &3 FAILED \n\n");
 
-	if (GraphAddEdge(tryingGraph, 2, 1, 3) == FALSE)
+	if (GraphAddEdge(tryingGraph, 4, 5, 3) == FALSE)
 		printf("Adding Edge Check &4 FAILED \n\n");
 
 
@@ -421,19 +522,27 @@ int main()
 
 	printf("number of Edges %d \n\n", GraphGetNumberOfEdges(tryingGraph));
 	
-	PSet neighbours_set = GraphNeighborVertices( tryingGraph, 2);
+	int *d = malloc(GraphGetNumberOfVertices(tryingGraph) * sizeof(int));
+	int *p = malloc(GraphGetNumberOfVertices(tryingGraph) * sizeof(int));
+
+
+	GraphFindShortestPath(tryingGraph, 0, d, p);
+	//free(p);
+	//free(d);
 	
-	PElem elem = SetGetFirst(neighbours_set);
-	printf("Neighbours in list:\n");
-	while (elem)
-	{
-		PVertex ver = (PVertex)elem;
-		printf("%d\n", ver->serialNumber);
-		elem = SetGetNext(neighbours_set);
+	printf("what\n");
+	printf("%d\n", GraphGetNumberOfVertices(tryingGraph));
+	printf("what\n");
+
+	for (int i = 0, v = GraphGetNumberOfVertices(tryingGraph); i <= v; i++) { // Initialization
+		d[i] = v; // Unknown distance from source to v
+		p[i] = -1; // Previous node in optimal path from source
+		printf("dist :%d\n", v);
+		printf("dist :%d\n", d[i]);
+		printf("dist :%d\n", p[i]);			  //add v to Q; // All nodes initially in Q (unvisited nodes)
 	}
 	
 	GraphDestroy(tryingGraph);
-	SetDestroy(neighbours_set);
-	
+	//SetDestroy(neighbours_set);
 	return 0;	
 }
