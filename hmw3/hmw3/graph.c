@@ -249,7 +249,43 @@ Bool GraphAddEdge(PGraph s, int vertex1, int vertex2, int weight)
 	return TRUE;
 }
 
-PSet GraphNeighborVertices(PGraph, int);
+PSet GraphNeighborVertices(PGraph s, int vertex_num)
+{
+	if ((s == NULL) || (vertex_num < 0)) return NULL;
+
+	PVertex the_vertex = (PVertex)find_vertex_by_num(s, vertex_num);
+
+	if (the_vertex == NULL) return NULL;    //means no such vertex here
+
+	PSet neigbours;                         // create the set of the neighbour vertex
+
+	if (NULL == (neigbours = SetCreate(cmp_ver, clone_ver, destroy_ver)))
+		return NULL;
+
+	PElem elem = SetGetFirst(s->Edge_set);
+	while (elem)
+	{
+		PEdge edg = (PEdge)elem;
+		if ((edg->nodeA->serialNumber == vertex_num) || (edg->nodeB->serialNumber == vertex_num)) // means there is a neighbour
+		{
+			// from here
+			PVertex new_vertex = (PVertex)malloc(sizeof(Vertex));                                // #$%#%#$%#%#$ MALLOC
+			if (!new_vertex) return FALSE;
+			if (edg->nodeA->serialNumber == vertex_num)
+				new_vertex->serialNumber = vertex_num;
+
+			if (SetAdd(neigbours, new_vertex) == FALSE)//adding the vertex to the Graph
+			{
+				free(new_vertex);
+				return FALSE;
+			}
+			//till here
+		}
+		elem = SetGetNext(s->Edge_set);
+	}
+	return neigbours;
+
+}
 
 Bool GraphFindShortestPath(PGraph pGraph, int source, int* dist, int* prev);
 
