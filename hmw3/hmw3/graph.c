@@ -248,8 +248,49 @@ Bool GraphAddEdge(PGraph s, int vertex1, int vertex2, int weight)
 	}
 	return TRUE;
 }
+/*****************************
+*GraphNeighborVertices function
+*The function creates a set of neighbours
+*Argument (PGrapf s, int vertex_num)
+*Output PSet - neighbours
+*****************************/
+PSet GraphNeighborVertices(PGraph s, int vertex_num)
+{
+	if ((s == NULL) || (vertex_num < 0)) return NULL;
 
-PSet GraphNeighborVertices(PGraph, int);
+	PVertex the_vertex = (PVertex)find_vertex_by_num(s, vertex_num);
+
+	if (the_vertex == NULL) return NULL;    //means no such vertex here
+
+	PSet neigbours;                         // create the set of the neighbour vertex
+
+	if (NULL == (neigbours = SetCreate(cmp_ver, clone_ver, destroy_ver)))
+		return NULL;
+
+	PElem elem = SetGetFirst(s->Edge_set);
+	while (elem)
+	{
+		PEdge edg = (PEdge)elem;
+		if ((edg->nodeA->serialNumber == vertex_num) || (edg->nodeB->serialNumber == vertex_num)) // means there is a neighbour
+		{
+			// from here
+			PVertex new_vertex = (PVertex)malloc(sizeof(Vertex));                                // #$%#%#$%#%#$ MALLOC
+			if (!new_vertex) return FALSE;
+			if (edg->nodeA->serialNumber == vertex_num)
+			new_vertex->serialNumber = vertex_num;
+
+			if (SetAdd(neigbours, new_vertex) == FALSE)//adding the vertex to the Graph
+			{
+				free(new_vertex);
+				return FALSE;
+			}
+			//till here
+		}
+		elem = SetGetNext(s->Edge_set);
+	}
+	return neigbours;
+
+}
 
 Bool GraphFindShortestPath(PGraph pGraph, int source, int* dist, int* prev);
 
@@ -325,17 +366,17 @@ int main()
 	PGraph tryingGraph;
 	tryingGraph = GraphCreate();
 	
-	if (GraphAddVertex(tryingGraph, 5) == FALSE)
+	if (GraphAddVertex(tryingGraph, 0) == FALSE)
 		printf("Adding Vertex Check &0 FAILED \n\n");
 	
-	if (GraphAddVertex(tryingGraph, 0) == FALSE)
+	if (GraphAddVertex(tryingGraph, 1 == FALSE))
 		printf("Adding Vertex Check &1 FAILED \n\n");
 
 	if (GraphAddVertex(tryingGraph, 2) == FALSE)
 		printf("Adding Vertex Check &2 FAILED \n\n");
 	
-	if (GraphAddVertex(tryingGraph, 1) == FALSE)
-		printf("Adding Vertex Check &1 FAILED \n\n");
+	if (GraphAddVertex(tryingGraph, 3) == FALSE)
+		printf("Adding Vertex Check &3 FAILED \n\n");
 	print_vertex_list(tryingGraph);
 
 
@@ -346,10 +387,10 @@ int main()
 		printf("Adding Edge Check &1 FAILED - cause you are fucking nigha \n\n");
 		*/
 
-	if (GraphAddEdge(tryingGraph, 0, 1, 3) == FALSE)
+	if (GraphAddEdge(tryingGraph, 1, 2, 3) == FALSE)
 		printf("Adding Edge Check &2 FAILED \n\n");
 
-	if (GraphAddEdge(tryingGraph, 1, 0, 3) == FALSE)
+	if (GraphAddEdge(tryingGraph, 1, 3, 3) == FALSE)
 		printf("Adding Edge Check &2 FAILED \n\n");
 	
 	print_edges_list(tryingGraph);
@@ -357,6 +398,8 @@ int main()
 	printf("number of vertex %d \n\n", GraphGetNumberOfVertices(tryingGraph));
 
 	printf("number of Edges %d \n\n", GraphGetNumberOfEdges(tryingGraph));
+
+	PSet Neigh = GraphNeighborVertices(tryingGraph, 2);
 
 
 	GraphDestroy(tryingGraph);
