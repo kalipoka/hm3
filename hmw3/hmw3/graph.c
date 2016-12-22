@@ -16,8 +16,6 @@ struct _Graph{
 
 /********************************HELPERS***************************************/
 
-
-
 static void print_vertex_list(PGraph s)
 {
 	PElem elem = SetGetFirst(s->Vertex_set);
@@ -258,34 +256,56 @@ Bool GraphAddEdge(PGraph s, int vertex1, int vertex2, int weight)
 }
 
 PSet GraphNeighborVertices(PGraph, int);
-/*
+
+
 Bool GraphFindShortestPath(PGraph pGraph, int source, int* dist, int* prev)
 {
-	create vertex set Q
+	// create vertex set Q - we already have dont we
+	pGraph tmp_graph = GraphCreate();
 	
-	for each vertex v in Graph{ // Initialization
-		dist[v] = INFINITY // Unknown distance from source to v
-		prev[v] = UNDEFINED // Previous node in optimal path from source
-		add v to Q // All nodes initially in Q (unvisited nodes)
+	for (int i = 0; i <= 10; i++)
+	{
+		;
+	}
+
+	int v = GraphGetNumberOfVertices(pGraph);
+	for (int i = 0; i <= v; i++) { // Initialization
+		dist[i] = v; // Unknown distance from source to v
+		prev[i] = -1; // Previous node in optimal path from source
+		//add v to Q; // All nodes initially in Q (unvisited nodes)
 	}
 	
-	dist[source] = 0 // Distance from source to source
-	prev[source] = source
+		dist[source] = 0; // Distance from source to source
+		prev[source] = source;
 	
-	while Q is not empty{
-		u = vertex in Q with min dist[u] // Source node will be selected first
-		remove u from Q
+	PElem elem = find_vertex_by_num(pGraph, source);
+	while (elem){
+		PVertex ver = (PVertex)elem;
+		//
+
+
+		PSet ver =GraphNeighborVertices(pGraph, ver->serialNumber);
+		PElem elem_min = SetGetFirst(pGraph->Vertex_set);
+		while (elem_min) { //checks who is the minimal neibour
+
+
+		}
+		//elem = SetGetNext(s->Vertex_set);
+
+		//u = vertex in Q with min dist[u] // Source node will be selected first
+		//remove u from Q
 		
-		for each neighbor v of u{ // where v is still in Q.
-			alt = dist[u] + length(u, v)
-			if (alt < dist[v]) { // A shorter path to v has been found
-				dist[v] = alt
-			prev[v] = u
+		//for (each neighbor v of u{ // where v is still in Q.
+		//	alt = dist[u] + length(u, v)
+		//	if (alt < dist[v]) { // A shorter path to v has been found
+		//		dist[v] = alt
+		//	prev[v] = u
 		 }
-	}
-	return dist[
+	Destroy(tmp_graph);
+	return TRUE;
 }
-*/
+
+
 /*****************************
 *GraphGetNumberOfEdges function
 *The function return the number of exisiting edges in the graph
@@ -363,7 +383,7 @@ int main()
 	if (GraphAddVertex(tryingGraph, 1) == FALSE)
 		printf("Adding Vertex Check &1 FAILED \n\n");
 
-	if (GraphAddVertex(tryingGraph, 2) == FALSE)
+	if (GraphAddVertex(tryingGraph, 2) == FALSE) 
 		printf("Adding Vertex Check &2 FAILED \n\n");
 	
 	print_vertex_list(tryingGraph);
