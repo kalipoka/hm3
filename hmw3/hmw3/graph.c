@@ -107,7 +107,7 @@ static PElem find_edge(PGraph s, PElem pElem)
 	return SetFindElement(s->Edge_set, pElem);
 }
 
-static void destroy_ver(PElem pElem)
+static void destroy_ver(PElem pElem) ////////////////////////////////////////////////////////////////////////////////////////
 {
 	PVertex pVer = (PVertex)pElem;
 	free(pVer);
@@ -173,6 +173,7 @@ static PElem clone_ver(PElem pElem)
 	return pVertex_new;
 }
 
+
 static PElem find_similar_edge(PGraph s, PElem pElem)
 {
 	PElem elem_index = SetGetFirst(s->Edge_set);
@@ -190,22 +191,26 @@ static PElem find_similar_edge(PGraph s, PElem pElem)
 static Bool Clone_graph(PGraph o, PGraph t)
 {
 	PElem elem = SetGetFirst(o->Vertex_set);
+	PElem elemcopy = NULL;
 	while (elem)
 	{
-		if (SetAdd(t->Vertex_set, elem))  return FALSE;
+		PVertex ver = (PVertex)elem;
+		if (GraphAddVertex(t, ver->serialNumber) == FALSE)  return FALSE;
 		elem = SetGetNext(o->Vertex_set);
 	} //we want the source to be the first element in our Q
 
 	elem = SetGetFirst(o->Edge_set);
 	while (elem)
 	{
-		if (SetAdd(t->Edge_set, elem) ==FALSE) return FALSE;
+		PEdge edg = (PEdge)elem;
+		if (GraphAddEdge(t,((PVertex)edg->nodeA)->serialNumber, ((PVertex)edg->nodeB)->serialNumber, edg->weight) == FALSE) return FALSE;
 		elem = SetGetNext(o->Edge_set);
 	}
 	return TRUE;
 }
 
-	destroyAllEdges(PGraph s)
+
+destroyAllEdges(PGraph s)
 	{
 		PElem elem = SetGetFirst(s->Edge_set);
 		while (elem)
@@ -380,7 +385,8 @@ Bool GraphFindShortestPath(PGraph pGraph, int source, int* dist, int* prev)
 	// cloning original graph to tmp
 	if (Clone_graph(pGraph, tmp_graph) == FALSE) return FALSE;
 
-	for (int i = 0, v = GraphGetNumberOfVertices(tmp_graph); i < v; i++) { // Initialization
+	int i = 0, v = 0;
+	for ( i = 0, v = GraphGetNumberOfVertices(tmp_graph); i < v; i++) { // Initialization
 		dist[i] = count_edges(tmp_graph)*10; // Unknown distance from source to v
 		prev[i] = -1; // Previous node in optimal path from source
 		printf("%d %d %d\n", i, dist[i], prev[i]);		  //add v to Q; // All nodes initially in Q (unvisited nodes)
@@ -405,7 +411,7 @@ Bool GraphFindShortestPath(PGraph pGraph, int source, int* dist, int* prev)
 		}
 
 		PVertex ver_min = (PVertex)min_vertex_elem; //this vertex has the minimum distance
-		
+			
 		// check neibours
 		PSet neibour_set = GraphNeighborVertices(pGraph, ver_min->serialNumber);
 		PElem neibour = SetGetFirst(neibour_set);
@@ -496,7 +502,7 @@ void GraphDestroy(PGraph s)
 //
 
 /*********************************** Deeebugy & Testen ****************************************/
-
+/*
 int main()
 {
 	PGraph tryingGraph;
@@ -523,7 +529,6 @@ int main()
 	
 	print_vertex_list(tryingGraph);
 
-	
 	if (GraphAddEdge(tryingGraph, 0, 1, 3) == FALSE)
 		printf("Adding Edge Check &0 FAILED \n\n");
 	
@@ -551,22 +556,22 @@ int main()
 
 
 	GraphFindShortestPath(tryingGraph, 0, d, p);
-
-	
+		
 	/*printf("what\n");
 	printf("%d\n", GraphGetNumberOfVertices(tryingGraph));
 	printf("what\n");
-	*/
+	
 	
 	for (int i = 0, v = GraphGetNumberOfVertices(tryingGraph); i <v; i++) { // Initialization
 		printf("%d %d %d\n", i, d[i], p[i]);
-		//printf("dist :%d\n", d[i]);
-		//printf("prev :%d\n", p[i]);			  //add v to Q; // All nodes initially in Q (unvisited nodes)
 	}
 
-	//GraphDestroy(tryingGraph);
+
+
+	GraphDestroy(tryingGraph);
 	free(p);
 	free(d);
 
-	return 0;	
+	return 0;
 }
+*/
