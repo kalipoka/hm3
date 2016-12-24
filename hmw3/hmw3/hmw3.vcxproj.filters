@@ -37,7 +37,7 @@
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <None Include="makefile">
+    <None Include="..\..\..\..\..\AppData\Local\Temp\Mxt94\tmp\dragdrop\makefile">
       <Filter>Resource Files</Filter>
     </None>
   </ItemGroup>

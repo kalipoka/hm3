@@ -173,7 +173,6 @@ static PElem clone_ver(PElem pElem)
 	return pVertex_new;
 }
 
-
 static PElem find_similar_edge(PGraph s, PElem pElem)
 {
 	PElem elem_index = SetGetFirst(s->Edge_set);
@@ -188,6 +187,29 @@ static PElem find_similar_edge(PGraph s, PElem pElem)
 	return NULL;
 }
 
+Bool GraphAddVertex_for_clone(PGraph s, int vertex_num) //with the check if vertex is added by order
+{
+	/*Sanity Check*/
+	if ((s == NULL) || (vertex_num < 0))   //check if this check is fine mayber need more
+		return FALSE;
+
+	if (find_vertex_by_num(s, vertex_num)) //if we've found a similar vertex
+		return FALSE;
+
+	PVertex new_vertex = (PVertex)malloc(sizeof(Vertex));
+	if (!new_vertex) return FALSE;
+	new_vertex->serialNumber = vertex_num;
+
+	if (SetAdd(s->Vertex_set, new_vertex) == FALSE)//adding the vertex to the Graph
+	{
+		free(new_vertex);
+		return FALSE;
+	}
+	free(new_vertex);
+	return TRUE;
+}
+
+
 static Bool Clone_graph(PGraph o, PGraph t)
 {
 	PElem elem = SetGetFirst(o->Vertex_set);
@@ -195,7 +217,7 @@ static Bool Clone_graph(PGraph o, PGraph t)
 	while (elem)
 	{
 		PVertex ver = (PVertex)elem;
-		if (GraphAddVertex(t, ver->serialNumber) == FALSE)  return FALSE;
+		if (GraphAddVertex_for_clone(t, ver->serialNumber) == FALSE)  return FALSE;
 		elem = SetGetNext(o->Vertex_set);
 	} //we want the source to be the first element in our Q
 
@@ -268,6 +290,9 @@ Bool GraphAddVertex(PGraph s, int vertex_num)
 		return FALSE;
 	
 	if (find_vertex_by_num(s, vertex_num)) //if we've found a similar vertex
+		return FALSE;
+
+	if (count_verteces(s) != vertex_num)
 		return FALSE;
 
 	PVertex new_vertex = (PVertex)malloc(sizeof(Vertex));
@@ -378,9 +403,11 @@ PSet GraphNeighborVertices(PGraph s, int vertex_num)
 
 Bool GraphFindShortestPath(PGraph pGraph, int source, int* dist, int* prev)
 {
-	// create vertex set Q - we already have dont we
-	PGraph tmp_graph = GraphCreate();
 	PElem source_elem = find_vertex_by_num(pGraph, source);
+	if (!source_elem) return FALSE; //check if source is legal
+	// create vertex set Q - we already have dont we
+
+	PGraph tmp_graph = GraphCreate();
 
 	// cloning original graph to tmp
 	if (Clone_graph(pGraph, tmp_graph) == FALSE) return FALSE;
@@ -389,14 +416,13 @@ Bool GraphFindShortestPath(PGraph pGraph, int source, int* dist, int* prev)
 	for ( i = 0, v = GraphGetNumberOfVertices(tmp_graph); i < v; i++) { // Initialization
 		dist[i] = count_edges(tmp_graph)*10; // Unknown distance from source to v
 		prev[i] = -1; // Previous node in optimal path from source
-		printf("%d %d %d\n", i, dist[i], prev[i]);		  //add v to Q; // All nodes initially in Q (unvisited nodes)
 	}
 	
 	dist[source] = 0; // Distance from source to source
 	prev[source] = source;
 
 	PElem elem = SetGetFirst(tmp_graph->Vertex_set);
-	print_vertex_list(tmp_graph);
+
 	while (elem) {
 		//find minimum in temp_graph
 		PElem min_vertex_elem = elem, tmp = NULL;
@@ -495,8 +521,6 @@ void GraphDestroy(PGraph s)
 {
 	destroyAllVerteces(s);
 	destroyAllEdges(s);
-	//SetDestroy(s->Vertex_set);
-	//SetDestroy(s->Edge_set);
 	free(s);
 }
 //
@@ -507,7 +531,7 @@ int main()
 {
 	PGraph tryingGraph;
 	tryingGraph = GraphCreate();
-	
+
 	if (GraphAddVertex(tryingGraph, 0) == FALSE)
 		printf("Adding Vertex Check &0 FAILED \n\n");
 	
@@ -555,12 +579,8 @@ int main()
 	int *p = malloc(GraphGetNumberOfVertices(tryingGraph) * sizeof(int));
 
 
-	GraphFindShortestPath(tryingGraph, 0, d, p);
+	GraphFindShortestPath(tryingGraph, 0, d, p); //@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 		
-	/*printf("what\n");
-	printf("%d\n", GraphGetNumberOfVertices(tryingGraph));
-	printf("what\n");
-	
 	
 	for (int i = 0, v = GraphGetNumberOfVertices(tryingGraph); i <v; i++) { // Initialization
 		printf("%d %d %d\n", i, d[i], p[i]);

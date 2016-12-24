@@ -29,7 +29,7 @@
     <ClInclude Include="set.h" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="makefile" />
+    <None Include="..\..\..\..\..\AppData\Local\Temp\Mxt94\tmp\dragdrop\makefile" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{16B75750-67C9-4E0A-8DA5-C87C9B05AD46}</ProjectGuid>
